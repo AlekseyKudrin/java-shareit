@@ -1,12 +1,63 @@
 package ru.practicum.shareit.user;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.UserService;
 
-/**
- * TODO Sprint add-controllers.
- */
+import javax.validation.Valid;
+import java.util.Collection;
+import java.util.Optional;
+
+@Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/users")
 public class UserController {
+
+    private final UserService userService;
+
+    @PostMapping
+    public Optional<UserDto> create(
+            @Valid @RequestBody UserDto userDto) {
+        log.info("Creating user");
+        return userService.create(userDto);
+    }
+
+    @PatchMapping("/{userId}")
+    public Optional<UserDto> update(
+            @PathVariable int userId,
+            @RequestBody UserDto userDto) {
+        log.info("Updating User");
+        return userService.update(userId, userDto);
+    }
+
+    @GetMapping("/{userId}")
+    public Optional<User> get(
+            @PathVariable int userId) {
+        log.info("Return user by Id");
+        return userService.get(userId);
+    }
+
+    @DeleteMapping("/{userId}")
+    public Boolean delete(
+            @PathVariable int userId) {
+        log.info("Delete user by id");
+        return userService.delete(userId);
+    }
+
+    @GetMapping
+    public Collection<User> getAll() {
+        log.info("Return user list");
+        return userService.getAll();
+    }
 }
