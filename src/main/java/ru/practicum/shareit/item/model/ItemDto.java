@@ -1,21 +1,21 @@
-package ru.practicum.shareit.user.model;
+package ru.practicum.shareit.item.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import ru.practicum.shareit.request.ItemRequest;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class User {
+public class ItemDto {
     int id;
     String name;
-    String  email;
+    String description;
+    Boolean available;
+    String owen;
+    ItemRequest request;
 }

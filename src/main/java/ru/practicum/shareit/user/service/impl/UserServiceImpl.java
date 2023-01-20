@@ -5,10 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.dao.UserDao;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -22,27 +23,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserDto> create(UserDto userDto) {
         User user = userDao.add(UserMapper.toUser(userDto)).orElse(new User());
+        log.info("User successfully created");
         return Optional.of(UserMapper.toUserDto(user));
     }
 
     @Override
     public Optional<UserDto> update(int userId, UserDto userDto) {
         User user = userDao.update(userId,UserMapper.toUser(userDto)).orElse(new User());
+        log.info("User successfully update");
         return Optional.of(UserMapper.toUserDto(user));
     }
 
     @Override
     public Optional<User> get(int userId) {
-        return userDao.get(userId);
+        Optional<User> user = userDao.get(userId);
+        log.info("Return user by Id successfully");
+        return user;
     }
 
     @Override
     public Collection<User> getAll() {
-        return userDao.getAll();
+        Collection<User> users = userDao.getAll();
+        log.info("Return user list successfully");
+        return users;
     }
 
     @Override
     public Boolean delete(int userId) {
-        return userDao.delete(userId);
+        Boolean isDelete = userDao.delete(userId);
+        log.info("Delete user by id successfully");
+        return isDelete;
     }
 }

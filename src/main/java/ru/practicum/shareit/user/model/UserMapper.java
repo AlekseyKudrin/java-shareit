@@ -1,6 +1,6 @@
 package ru.practicum.shareit.user.model;
 
-import ru.practicum.shareit.user.dto.UserDto;
+import javax.validation.Valid;
 
 public class UserMapper {
 
