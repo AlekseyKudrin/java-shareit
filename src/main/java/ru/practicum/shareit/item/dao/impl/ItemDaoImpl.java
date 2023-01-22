@@ -32,7 +32,7 @@ public class ItemDaoImpl implements ItemDao {
     @Override
     public Optional<Item> update(int itemId, Item item) {
         Item i2 = itemStorage.get(itemId);
-        if (!i2.getOwner().equals(item.getOwner())){
+        if (!i2.getOwner().equals(item.getOwner())) {
             throw new ValidationFieldsException("the owner of the item is not correct");
         }
         if (item.getName() != null) {
