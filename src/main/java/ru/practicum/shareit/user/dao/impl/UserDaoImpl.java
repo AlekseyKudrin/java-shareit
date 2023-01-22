@@ -1,17 +1,18 @@
 package ru.practicum.shareit.user.dao.impl;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.dao.UserDao;
-import ru.practicum.shareit.user.exceptionHandler.exception.ValidationException;
-import ru.practicum.shareit.user.exceptionHandler.exception.ValidationFieldsException;
+import ru.practicum.shareit.exceptionHandler.exception.ValidationException;
+import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Component
+@Repository
 public class UserDaoImpl implements UserDao {
 
     private int id = 1;
