@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -56,7 +57,7 @@ public class ItemDaoImpl implements ItemDao {
     public Collection<Item> getAll(Integer userId) {
         Collection<Item> items = new ArrayList<>();
         for (Item item : itemStorage.values()) {
-            if (item.getOwner() == userId) {
+            if (Objects.equals(item.getOwner(), userId)) {
                 items.add(item);
             }
         }
