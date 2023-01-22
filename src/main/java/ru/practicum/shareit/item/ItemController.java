@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.shareit.item.dao.ItemDao;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -31,17 +30,19 @@ public class ItemController {
 
     @PostMapping
     public Optional<ItemDto> create(
-            @RequestHeader Map<String,String> headers,
-            @Valid @RequestBody ItemDto itemDto) {
+            @RequestHeader Map<String, String> headers,
+            @Valid @RequestBody ItemDto itemDto
+    ) {
         log.info("Creating item");
         return itemService.create(headers, itemDto);
     }
 
     @PatchMapping("/{itemId}")
     public Optional<ItemDto> update(
-            @RequestHeader Map<String,String> headers,
+            @RequestHeader Map<String, String> headers,
             @PathVariable int itemId,
-            @RequestBody ItemDto itemDto) {
+            @RequestBody ItemDto itemDto
+    ) {
         log.info("Updating item");
         return itemService.update(headers, itemId, itemDto);
     }
@@ -55,14 +56,15 @@ public class ItemController {
 
     @GetMapping
     public Collection<ItemDto> getAll(
-            @RequestHeader Map<String,String> headers) {
+            @RequestHeader Map<String, String> headers
+    ) {
         log.info("Return item list");
         return itemService.getAll(headers);
     }
 
     @GetMapping("/search")
     public Collection<ItemDto> search(
-        @RequestParam @NotBlank String text
+            @RequestParam @NotBlank String text
     ) {
         log.info("Return of found items");
         return itemService.search(text);

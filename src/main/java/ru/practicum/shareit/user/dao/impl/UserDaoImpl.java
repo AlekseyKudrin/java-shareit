@@ -1,11 +1,10 @@
 package ru.practicum.shareit.user.dao.impl;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.dao.UserDao;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationException;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
+import ru.practicum.shareit.user.dao.UserDao;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,12 +16,13 @@ public class UserDaoImpl implements UserDao {
 
     private int id = 1;
 
-    private Map<Integer, User> userStorage= new HashMap<>();
+    private final Map<Integer, User> userStorage = new HashMap<>();
+
     @Override
     public Optional<User> add(User user) {
         validation(user);
         user.setId(id);
-        userStorage.put(id,user);
+        userStorage.put(id, user);
         id++;
         return Optional.of(user);
     }
@@ -59,14 +59,15 @@ public class UserDaoImpl implements UserDao {
         return userStorage.values();
     }
 
-    private void validation (User user) {
+    private void validation(User user) {
         for (User userTemp : userStorage.values()) {
             if (userTemp.getEmail().equals(user.getEmail())) {
                 throw new ValidationException("This email is already taken by another user");
             }
         }
     }
-    private void validation (int userId) {
+
+    private void validation(int userId) {
         if (!userStorage.containsKey(userId)) {
             throw new ValidationFieldsException("User not found");
         }

@@ -3,13 +3,12 @@ package ru.practicum.shareit.user.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.dao.UserDao;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -29,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDto> update(int userId, UserDto userDto) {
-        User user = userDao.update(userId,UserMapper.toUser(userDto)).orElse(new User());
+        User user = userDao.update(userId, UserMapper.toUser(userDto)).orElse(new User());
         log.info("User successfully update");
         return Optional.of(UserMapper.toUserDto(user));
     }

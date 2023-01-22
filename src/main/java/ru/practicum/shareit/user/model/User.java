@@ -6,10 +6,6 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
@@ -17,5 +13,5 @@ import javax.validation.constraints.NotNull;
 public class User {
     int id;
     String name;
-    String  email;
+    String email;
 }

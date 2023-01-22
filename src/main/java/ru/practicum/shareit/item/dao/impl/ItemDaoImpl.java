@@ -18,9 +18,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ItemDaoImpl implements ItemDao {
     private final UserDao userDao;
+    private final Map<Integer, Item> itemStorage = new HashMap<>();
     private int id = 1;
-
-    private Map<Integer, Item> itemStorage = new HashMap<>();
 
     public Optional<Item> add(Item item) {
         validation(item);

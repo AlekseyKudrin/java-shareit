@@ -2,7 +2,6 @@ package ru.practicum.shareit.user.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
@@ -21,5 +20,5 @@ public class UserDto {
     String name;
     @Email
     @NotBlank(message = "field name cannot be empty")
-    String  email;
+    String email;
 }
