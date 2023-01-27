@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class User {
-    int id;
+    long id;
     String name;
     String email;
 }

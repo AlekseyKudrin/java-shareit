@@ -2,17 +2,16 @@ package ru.practicum.shareit.item.dao;
 
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
 
 public interface ItemDao {
-    Optional<Item> add(Item item);
+    Item add(Item item);
 
-    Optional<Item> update(int itemId, Item toItem);
+    Item update(long itemId, Item toItem);
 
-    Optional<Item> get(int itemId);
+    Item get(long itemId);
 
-    Collection<Item> getAll(Integer userId);
+    List<Item> getAll(long userId);
 
-    Collection<Item> search(String text);
+    List<Item> search(String text);
 }

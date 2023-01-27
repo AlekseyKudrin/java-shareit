@@ -12,11 +12,11 @@ import ru.practicum.shareit.request.ItemRequest;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class Item {
-    Integer id;
+    long id;
     String name;
     String description;
     Boolean available;
-    Integer owner;
+    Long owner;
     ItemRequest request;
 
 }

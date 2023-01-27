@@ -15,10 +15,7 @@ import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,42 +26,42 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public Optional<ItemDto> create(
-            @RequestHeader Map<String, String> headers,
+    public ItemDto create(
+            @RequestHeader ("X-Sharer-User-Id") long userId,
             @Valid @RequestBody ItemDto itemDto
     ) {
         log.info("Creating item");
-        return itemService.create(headers, itemDto);
+        return itemService.create(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public Optional<ItemDto> update(
-            @RequestHeader Map<String, String> headers,
-            @PathVariable int itemId,
+    public ItemDto update(
+            @RequestHeader ("X-Sharer-User-Id") long userId,
+            @PathVariable long itemId,
             @RequestBody ItemDto itemDto
     ) {
         log.info("Updating item");
-        return itemService.update(headers, itemId, itemDto);
+        return itemService.update(userId, itemId, itemDto);
     }
 
     @GetMapping("/{itemId}")
-    public Optional<ItemDto> get(
-            @PathVariable int itemId) {
+    public ItemDto get(
+            @PathVariable long itemId) {
         log.info("Return item by id");
         return itemService.get(itemId);
     }
 
     @GetMapping
-    public Collection<ItemDto> getAll(
-            @RequestHeader Map<String, String> headers
+    public List<ItemDto> getAll(
+            @RequestHeader ("X-Sharer-User-Id") long userId
     ) {
         log.info("Return item list");
-        return itemService.getAll(headers);
+        return itemService.getAll(userId);
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> search(
-            @RequestParam @NotBlank String text
+    public List<ItemDto> search(
+            @RequestParam String text
     ) {
         log.info("Return of found items");
         return itemService.search(text);

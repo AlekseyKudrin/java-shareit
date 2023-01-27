@@ -8,38 +8,38 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dao.UserDao;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 
 @Repository
 @RequiredArgsConstructor
 public class ItemDaoImpl implements ItemDao {
     private final UserDao userDao;
-    private final Map<Integer, Item> itemStorage = new HashMap<>();
-    private int id = 1;
+    private final Map<Long, Item> itemStorage = new HashMap<>();
+    private long id = 1;
 
-    public Optional<Item> add(Item item) {
+    public Item add(Item item) {
         validation(item);
         item.setId(id);
         itemStorage.put(id, item);
         id++;
-        return Optional.of(item);
+        return item;
     }
 
     @Override
-    public Optional<Item> update(int itemId, Item item) {
+    public Item update(long itemId, Item item) {
+        validation(item);
         Item i2 = itemStorage.get(itemId);
         if (!i2.getOwner().equals(item.getOwner())) {
             throw new ValidationFieldsException("the owner of the item is not correct");
         }
-        if (item.getName() != null) {
+        if (item.getName() != null && !item.getName().isBlank()) {
             i2.setName(item.getName());
         }
-        if (item.getDescription() != null) {
+        if (item.getDescription() != null && !item.getDescription().isBlank()) {
             i2.setDescription(item.getDescription());
         }
         if (item.getAvailable() != null) {
@@ -49,13 +49,13 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     @Override
-    public Optional<Item> get(int itemId) {
-        return Optional.of(itemStorage.get(itemId));
+    public Item get(long itemId) {
+        return itemStorage.get(itemId);
     }
 
     @Override
-    public Collection<Item> getAll(Integer userId) {
-        Collection<Item> items = new ArrayList<>();
+    public List<Item> getAll(long userId) {
+        List<Item> items = new ArrayList<>();
         for (Item item : itemStorage.values()) {
             if (Objects.equals(item.getOwner(), userId)) {
                 items.add(item);
@@ -65,9 +65,9 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     @Override
-    public Collection<Item> search(String text) {
-        Collection<Item> items = new ArrayList<>();
-        if (text.length() == 0) return items;
+    public List<Item> search(String text) {
+        List<Item> items = new ArrayList<>();
+        if (text.isBlank()) return List.of();
         for (Item item : itemStorage.values()) {
             if (item.getAvailable()) {
                 StringBuilder description = new StringBuilder(

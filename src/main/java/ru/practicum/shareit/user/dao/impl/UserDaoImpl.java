@@ -6,57 +6,57 @@ import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException
 import ru.practicum.shareit.user.dao.UserDao;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Repository
 public class UserDaoImpl implements UserDao {
 
-    private int id = 1;
+    private long id = 1;
 
-    private final Map<Integer, User> userStorage = new HashMap<>();
+    private final Map<Long, User> userStorage = new HashMap<>();
 
     @Override
-    public Optional<User> add(User user) {
+    public User add(User user) {
         validation(user);
         user.setId(id);
         userStorage.put(id, user);
         id++;
-        return Optional.of(user);
+        return user;
     }
 
     @Override
-    public Optional<User> get(int userId) {
+    public User get(long userId) {
         validation(userId);
-        return Optional.of(userStorage.get(userId));
+        return userStorage.get(userId);
     }
 
     @Override
-    public Optional<User> update(int userId, User user) {
+    public User update(long userId, User user) {
         validation(userId);
         validation(user);
         User u2 = userStorage.get(userId);
-        if (user.getName() != null) {
+        if (user.getName() != null && !user.getName().isBlank()) {
             u2.setName(user.getName());
         }
-        if (user.getEmail() != null) {
+        if (user.getEmail() != null && !user.getEmail().isBlank()) {
             u2.setEmail(user.getEmail());
         }
-        return get(userId);
+        return get(u2.getId());
     }
 
     @Override
-    public Boolean delete(int userId) {
+    public Boolean delete(long userId) {
         validation(userId);
         userStorage.remove(userId);
         return true;
     }
 
     @Override
-    public Collection<User> getAll() {
-        return userStorage.values();
+    public List<User> getAll() {
+        return new ArrayList<>(userStorage.values());
     }
 
     private void validation(User user) {
@@ -67,7 +67,7 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
-    private void validation(int userId) {
+    private void validation(long userId) {
         if (!userStorage.containsKey(userId)) {
             throw new ValidationFieldsException("User not found");
         }

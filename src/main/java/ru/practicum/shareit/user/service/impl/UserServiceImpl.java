@@ -9,8 +9,7 @@ import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -20,35 +19,35 @@ public class UserServiceImpl implements UserService {
     private final UserDao userDao;
 
     @Override
-    public Optional<UserDto> create(UserDto userDto) {
-        User user = userDao.add(UserMapper.toUser(userDto)).orElse(new User());
+    public UserDto create(UserDto userDto) {
+        User user = userDao.add(UserMapper.toUser(userDto));
         log.info("User successfully created");
-        return Optional.of(UserMapper.toUserDto(user));
+        return UserMapper.toUserDto(user);
     }
 
     @Override
-    public Optional<UserDto> update(int userId, UserDto userDto) {
-        User user = userDao.update(userId, UserMapper.toUser(userDto)).orElse(new User());
+    public UserDto update(int userId, UserDto userDto) {
+        User user = userDao.update(userId, UserMapper.toUser(userDto));
         log.info("User successfully update");
-        return Optional.of(UserMapper.toUserDto(user));
+        return UserMapper.toUserDto(user);
     }
 
     @Override
-    public Optional<User> get(int userId) {
-        Optional<User> user = userDao.get(userId);
+    public UserDto get(int userId) {
+        User user = userDao.get(userId);
         log.info("Return user by Id successfully");
-        return user;
+        return UserMapper.toUserDto(user);
     }
 
     @Override
-    public Collection<User> getAll() {
-        Collection<User> users = userDao.getAll();
+    public java.util.List<User> getAll() {
+        List<User> users = userDao.getAll();
         log.info("Return user list successfully");
         return users;
     }
 
     @Override
-    public Boolean delete(int userId) {
+    public Boolean delete(long userId) {
         Boolean isDelete = userDao.delete(userId);
         log.info("Delete user by id successfully");
         return isDelete;

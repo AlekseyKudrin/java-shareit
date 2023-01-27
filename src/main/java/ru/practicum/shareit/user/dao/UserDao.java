@@ -2,17 +2,17 @@ package ru.practicum.shareit.user.dao;
 
 import ru.practicum.shareit.user.model.User;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
+
 
 public interface UserDao {
-    Optional<User> add(User user);
+    User add(User user);
 
-    Optional<User> get(int userId);
+    User get(long userId);
 
-    Optional<User> update(int userId, User user);
+    User update(long userId, User user);
 
-    Boolean delete(int userId);
+    Boolean delete(long userId);
 
-    Collection<User> getAll();
+    List<User> getAll();
 }
