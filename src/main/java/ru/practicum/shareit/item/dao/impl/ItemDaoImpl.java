@@ -24,9 +24,6 @@ public class ItemDaoImpl implements ItemDao {
     @Override
     public Item update(long itemId, Item item) {
         Item itemUpdate = itemStorage.get(itemId);
-//        if (!itemUpdate.getOwner().equals(item.getOwner())) {
-//            throw new ValidationFieldsException("the owner of the item is not correct");
-//        }
         if (item.getName() != null && !item.getName().isBlank()) {
             itemUpdate.setName(item.getName());
         }
