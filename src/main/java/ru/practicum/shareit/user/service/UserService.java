@@ -15,4 +15,6 @@ public interface UserService {
     List<User> getAll();
 
     Boolean delete(long userId);
+
+    void validationOwner(Long owner);
 }

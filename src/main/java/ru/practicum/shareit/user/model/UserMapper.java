@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
 public class UserMapper {
 
     public static User toUser(UserDto userDto) {
-        return new User(
-                -1,
-                userDto.getName() != null ? userDto.getName() : null,
-                userDto.getEmail() != null ? userDto.getEmail() : null
-        );
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        return user;
     }
 
     public static UserDto toUserDto(User user) {

@@ -52,4 +52,10 @@ public class UserServiceImpl implements UserService {
         log.info("Delete user by id successfully");
         return isDelete;
     }
+
+    @Override
+    public void validationOwner(Long owner) {
+        userDao.get(owner);
+    }
+
 }

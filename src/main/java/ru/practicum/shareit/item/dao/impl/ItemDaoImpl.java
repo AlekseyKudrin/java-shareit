@@ -2,27 +2,19 @@ package ru.practicum.shareit.item.dao.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 import ru.practicum.shareit.item.dao.ItemDao;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.dao.UserDao;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 
 @Repository
 @RequiredArgsConstructor
 public class ItemDaoImpl implements ItemDao {
-    private final UserDao userDao;
     private final Map<Long, Item> itemStorage = new HashMap<>();
     private long id = 1;
 
     public Item add(Item item) {
-        validation(item);
         item.setId(id);
         itemStorage.put(id, item);
         id++;
@@ -31,21 +23,20 @@ public class ItemDaoImpl implements ItemDao {
 
     @Override
     public Item update(long itemId, Item item) {
-        validation(item);
-        Item i2 = itemStorage.get(itemId);
-        if (!i2.getOwner().equals(item.getOwner())) {
-            throw new ValidationFieldsException("the owner of the item is not correct");
-        }
+        Item itemUpdate = itemStorage.get(itemId);
+//        if (!itemUpdate.getOwner().equals(item.getOwner())) {
+//            throw new ValidationFieldsException("the owner of the item is not correct");
+//        }
         if (item.getName() != null && !item.getName().isBlank()) {
-            i2.setName(item.getName());
+            itemUpdate.setName(item.getName());
         }
         if (item.getDescription() != null && !item.getDescription().isBlank()) {
-            i2.setDescription(item.getDescription());
+            itemUpdate.setDescription(item.getDescription());
         }
         if (item.getAvailable() != null) {
-            i2.setAvailable(item.getAvailable());
+            itemUpdate.setAvailable(item.getAvailable());
         }
-        return get(i2.getId());
+        return get(itemUpdate.getId());
     }
 
     @Override
@@ -79,9 +70,5 @@ public class ItemDaoImpl implements ItemDao {
             }
         }
         return items;
-    }
-
-    private void validation(Item item) {
-        userDao.get(item.getOwner());
     }
 }

@@ -6,14 +6,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
     public static Item toItem(long userId, ItemDto itemDto) {
-        return new Item(
-                itemDto.getId() != 0 ? itemDto.getId() : 0,
-                itemDto.getName() != null ? itemDto.getName() : null,
-                itemDto.getDescription() != null ? itemDto.getDescription() : null,
-                itemDto.getAvailable() != null ? itemDto.getAvailable() : null,
-                userId,
-                null
-        );
+        Item item = new Item();
+        item.setId(itemDto.getId());
+        item.setName(itemDto.getName());
+        item.setDescription(itemDto.getDescription());
+        item.setAvailable(itemDto.getAvailable());
+        item.setOwner(userId);
+        return item;
     }
 
     public static ItemDto toItemDto(Item item) {
