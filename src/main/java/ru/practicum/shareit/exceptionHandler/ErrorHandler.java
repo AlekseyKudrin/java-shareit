@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
-import ru.practicum.shareit.exceptionHandler.exception.ValidationException;
+import ru.practicum.shareit.exceptionHandler.exception.ConflictDataException;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationHeadersException;
 
 @Slf4j
@@ -15,13 +15,23 @@ import ru.practicum.shareit.exceptionHandler.exception.ValidationHeadersExceptio
 public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handlerValidationException(final ValidationException e) {
+    public ErrorResponse handlerConflictDataException(final ConflictDataException e) {
+        log.error("Conflict data input: " + e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, ValidationFieldsException.class})
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handlerValidationFieldsException(final RuntimeException e) {
+    public ErrorResponse handlerValidationFieldsException(final ValidationFieldsException e) {
+        log.error("Data input incorrect: " + e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+//    MethodArgumentNotValidException
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerMethodArgumentNotValidExceptionException(final MethodArgumentNotValidException e) {
+        log.error("Data input incorrect: " + e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 

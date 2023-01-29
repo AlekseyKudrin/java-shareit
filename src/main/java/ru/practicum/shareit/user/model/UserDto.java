@@ -15,9 +15,9 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class UserDto {
     Long id;
-    @NotBlank(message = "field name cannot be empty")
+    @NotBlank(message = "Field name cannot be empty")
     String name;
-    @Email
-    @NotBlank(message = "field name cannot be empty")
+    @Email(message = "Field email incorrect")
+    @NotBlank(message = "Field email cannot be empty")
     String email;
 }

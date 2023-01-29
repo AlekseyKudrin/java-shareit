@@ -1,7 +1,7 @@
 package ru.practicum.shareit.user.dao.impl;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.exceptionHandler.exception.ValidationException;
+import ru.practicum.shareit.exceptionHandler.exception.ConflictDataException;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 import ru.practicum.shareit.user.dao.UserDao;
 import ru.practicum.shareit.user.model.User;
@@ -37,14 +37,14 @@ public class UserDaoImpl implements UserDao {
     public User update(long userId, User user) {
         validation(userId);
         validation(user);
-        User u2 = userStorage.get(userId);
+        User userUpdate = userStorage.get(userId);
         if (user.getName() != null && !user.getName().isBlank()) {
-            u2.setName(user.getName());
+            userUpdate.setName(user.getName());
         }
         if (user.getEmail() != null && !user.getEmail().isBlank()) {
-            u2.setEmail(user.getEmail());
+            userUpdate.setEmail(user.getEmail());
         }
-        return get(u2.getId());
+        return get(userUpdate.getId());
     }
 
     @Override
@@ -62,14 +62,14 @@ public class UserDaoImpl implements UserDao {
     private void validation(User user) {
         for (User userTemp : userStorage.values()) {
             if (userTemp.getEmail().equals(user.getEmail())) {
-                throw new ValidationException("This email is already taken by another user");
+                throw new ConflictDataException("This email is already taken by another user");
             }
         }
     }
 
     private void validation(long userId) {
         if (!userStorage.containsKey(userId)) {
-            throw new ValidationFieldsException("User not found");
+            throw new ValidationFieldsException("User by ID not found");
         }
     }
 }
