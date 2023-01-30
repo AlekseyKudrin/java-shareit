@@ -64,6 +64,11 @@ public class ItemController {
             @RequestParam String text
     ) {
         log.info("Return of found items");
-        return itemService.search(text);
+        if (text.isBlank()) {
+            log.info("Return item list successfully");
+            return List.of();
+        } else {
+            return itemService.search(text);
+        }
     }
 }

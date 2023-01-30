@@ -12,12 +12,16 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ItemDaoImpl implements ItemDao {
     private final Map<Long, Item> itemStorage = new HashMap<>();
+    private final Map<Long, List<Item>> userItemIndex = new LinkedHashMap<>();
     private long id = 1;
 
     public Item add(Item item) {
         item.setId(id);
         itemStorage.put(id, item);
         id++;
+        final List<Item> items = userItemIndex.computeIfAbsent(item.getOwner(), k -> new ArrayList<>());
+        items.add(item);
+        userItemIndex.put(id, items);
         return item;
     }
 
@@ -33,7 +37,7 @@ public class ItemDaoImpl implements ItemDao {
         if (item.getAvailable() != null) {
             itemUpdate.setAvailable(item.getAvailable());
         }
-        return get(itemUpdate.getId());
+        return itemUpdate;
     }
 
     @Override
@@ -43,29 +47,16 @@ public class ItemDaoImpl implements ItemDao {
 
     @Override
     public List<Item> getAll(long userId) {
-        List<Item> items = new ArrayList<>();
-        for (Item item : itemStorage.values()) {
-            if (Objects.equals(item.getOwner(), userId)) {
-                items.add(item);
-            }
-        }
-        return items;
+        return userItemIndex.get(userId);
     }
 
     @Override
     public List<Item> search(String text) {
-        List<Item> items = new ArrayList<>();
-        if (text.isBlank()) return List.of();
-        for (Item item : itemStorage.values()) {
-            if (item.getAvailable()) {
-                StringBuilder description = new StringBuilder(
-                        item.getDescription().toLowerCase() +
-                                item.getName().toLowerCase());
-                if (description.toString().contains(text.toLowerCase())) {
-                    items.add(item);
-                }
-            }
-        }
-        return items;
+        final String searchText = text.toLowerCase(Locale.ENGLISH);
+        return itemStorage.values()
+                .stream()
+                .filter(i -> i.getAvailable()
+                        && (i.getName().toLowerCase().contains(searchText)
+                        || i.getDescription().toLowerCase().contains(searchText))).toList();
     }
 }

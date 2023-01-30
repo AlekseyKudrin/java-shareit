@@ -2,6 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,7 +28,7 @@ public class UserController {
 
     @PostMapping
     public UserDto create(
-            @Valid @RequestBody UserDto userDto) {
+            @Validated(UserDto.Create.class) @RequestBody UserDto userDto) {
         log.info("Creating user");
         return userService.create(userDto);
     }
@@ -35,7 +36,7 @@ public class UserController {
     @PatchMapping("/{userId}")
     public UserDto update(
             @PathVariable int userId,
-            @RequestBody UserDto userDto) {
+            @Validated(UserDto.Update.class) @RequestBody UserDto userDto) {
         log.info("Updating User");
         return userService.update(userId, userDto);
     }

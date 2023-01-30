@@ -36,15 +36,16 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User update(long userId, User user) {
         validation(userId);
-        validation(user);
+        user.setId(userId);
+        validationUpdate(user);
         User userUpdate = userStorage.get(userId);
         if (user.getName() != null && !user.getName().isBlank()) {
             userUpdate.setName(user.getName());
         }
-        if (user.getEmail() != null && !user.getEmail().isBlank()) {
+        if (user.getEmail() != null) {
             userUpdate.setEmail(user.getEmail());
         }
-        return get(userUpdate.getId());
+        return userUpdate;
     }
 
     @Override
@@ -71,5 +72,14 @@ public class UserDaoImpl implements UserDao {
         if (!userStorage.containsKey(userId)) {
             throw new ValidationFieldsException("User by ID not found");
         }
+    }
+
+    private void validationUpdate(User user) {
+        if (!userStorage.isEmpty()
+                && user.getEmail() != null
+                && userStorage.get(user.getId()).getEmail().equals(user.getEmail())) {
+            return;
+        }
+        validation(user);
     }
 }

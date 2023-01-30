@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public java.util.List<User> getAll() {
+    public List<User> getAll() {
         List<User> users = userDao.getAll();
         log.info("Return user list successfully");
         return users;

@@ -13,6 +13,7 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,29 +45,16 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto get(long itemId) {
-        Item item = itemDao.get(itemId);
-        return ItemMapper.toItemDto(item);
+        return ItemMapper.toItemDto(itemDao.get(itemId));
     }
 
     @Override
     public List<ItemDto> getAll(long userId) {
-        List<Item> items = itemDao.getAll(userId);
-        List<ItemDto> itemDtos = new ArrayList<>();
-        for (Item item :
-                items) {
-            itemDtos.add(ItemMapper.toItemDto(item));
-        }
-        return itemDtos;
+        return itemDao.getAll(userId).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     @Override
     public List<ItemDto> search(String text) {
-        List<Item> items = itemDao.search(text);
-        List<ItemDto> itemDtos = new ArrayList<>();
-        for (Item item :
-                items) {
-            itemDtos.add(ItemMapper.toItemDto(item));
-        }
-        return itemDtos;
+        return itemDao.search(text).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 }

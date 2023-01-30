@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 import ru.practicum.shareit.exceptionHandler.exception.ConflictDataException;
-import ru.practicum.shareit.exceptionHandler.exception.ValidationHeadersException;
+
+import java.util.Arrays;
 
 @Slf4j
 @RestControllerAdvice
@@ -26,7 +27,6 @@ public class ErrorHandler {
         log.error("Data input incorrect: " + e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
-//    MethodArgumentNotValidException
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -36,20 +36,9 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlerValidationHeadersException(final ValidationHeadersException e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlerValidationFields2Exception(final RuntimeException e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handlerOtherException(final Throwable e) {
+        log.error("Error from :" + Arrays.toString(e.getStackTrace()));
         return new ErrorResponse(e.getMessage());
     }
 }
