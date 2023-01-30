@@ -16,8 +16,10 @@ import javax.validation.constraints.NotBlank;
 public class UserDto {
     public interface Create {
     }
+
     public interface Update {
     }
+
     Long id;
     @NotBlank(message = "Field name cannot be empty", groups = Create.class)
     String name;
