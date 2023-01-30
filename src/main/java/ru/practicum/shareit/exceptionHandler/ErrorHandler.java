@@ -31,14 +31,14 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handlerMethodArgumentNotValidExceptionException(final MethodArgumentNotValidException e) {
-        log.error("Data input incorrect: " + e.getMessage());
+        log.info("Data input incorrect: " + e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handlerOtherException(final Throwable e) {
-        log.error("Error from :" + Arrays.toString(e.getStackTrace()));
+        log.info("Error from :" + Arrays.toString(e.getStackTrace()));
         return new ErrorResponse(e.getMessage());
     }
 }
