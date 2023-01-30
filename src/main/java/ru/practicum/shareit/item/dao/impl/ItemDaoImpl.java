@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Repository
@@ -62,6 +63,6 @@ public class ItemDaoImpl implements ItemDao {
                 .stream()
                 .filter(i -> i.getAvailable()
                         && (i.getName().toLowerCase().contains(searchText)
-                        || i.getDescription().toLowerCase().contains(searchText))).toList();
+                        || i.getDescription().toLowerCase().contains(searchText))).collect(Collectors.toList());
     }
 }
