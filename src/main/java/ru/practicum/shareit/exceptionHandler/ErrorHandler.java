@@ -17,28 +17,28 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handlerConflictDataException(final ConflictDataException e) {
-        log.error("Conflict data input: " + e.getMessage());
+        log.error("Conflict data input: {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlerValidationFieldsException(final ValidationFieldsException e) {
-        log.error("Data input incorrect: " + e.getMessage());
+        log.error("Data input incorrect: {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handlerMethodArgumentNotValidExceptionException(final MethodArgumentNotValidException e) {
-        log.error("Data input incorrect: " + e.getMessage());
+        log.error("Data input incorrect: {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handlerOtherException(final Throwable e) {
-        log.error("Error from :" + Arrays.toString(e.getStackTrace()));
+        log.error("Error from: {}", Arrays.toString(e.getStackTrace()));
         return new ErrorResponse(e.getMessage());
     }
 }

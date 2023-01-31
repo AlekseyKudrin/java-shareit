@@ -20,9 +20,7 @@ public class ItemMapper {
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
-                item.getAvailable(),
-                item.getOwner(),
-                null
+                item.getAvailable()
         );
     }
 }

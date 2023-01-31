@@ -20,7 +20,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User add(User user) {
-        validation(user);
+        validationUserEmail(user);
         user.setId(id);
         userStorage.put(id, user);
         id++;
@@ -29,20 +29,20 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User get(long userId) {
-        validation(userId);
+        validationUserId(userId);
         return userStorage.get(userId);
     }
 
     @Override
     public User update(long userId, User user) {
-        validation(userId);
+        validationUserId(userId);
         user.setId(userId);
         validationUpdate(user);
         User userUpdate = userStorage.get(userId);
         if (user.getName() != null && !user.getName().isBlank()) {
             userUpdate.setName(user.getName());
         }
-        if (user.getEmail() != null) {
+        if (user.getEmail() != null && !user.getEmail().isBlank()) {
             userUpdate.setEmail(user.getEmail());
         }
         return userUpdate;
@@ -50,7 +50,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Boolean delete(long userId) {
-        validation(userId);
+        validationUserId(userId);
         userStorage.remove(userId);
         return true;
     }
@@ -60,7 +60,7 @@ public class UserDaoImpl implements UserDao {
         return new ArrayList<>(userStorage.values());
     }
 
-    private void validation(User user) {
+    private void validationUserEmail(User user) {
         for (User userTemp : userStorage.values()) {
             if (userTemp.getEmail().equals(user.getEmail())) {
                 throw new ConflictDataException("This email is already taken by another user");
@@ -68,7 +68,7 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
-    private void validation(long userId) {
+    private void validationUserId(long userId) {
         if (!userStorage.containsKey(userId)) {
             throw new ValidationFieldsException("User by ID not found");
         }
@@ -80,6 +80,6 @@ public class UserDaoImpl implements UserDao {
                 && userStorage.get(user.getId()).getEmail().equals(user.getEmail())) {
             return;
         }
-        validation(user);
+        validationUserEmail(user);
     }
 }
