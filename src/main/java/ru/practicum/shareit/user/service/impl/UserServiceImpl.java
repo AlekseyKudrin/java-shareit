@@ -3,59 +3,63 @@ package ru.practicum.shareit.user.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.user.dao.UserDao;
+import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
+import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
+    private final UserRepository userRepository;
+
 
     @Override
     public UserDto create(UserDto userDto) {
-        User user = userDao.add(UserMapper.toUser(userDto));
-        log.info("User successfully created");
-        return UserMapper.toUserDto(user);
+        return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userDto)));
     }
 
     @Override
-    public UserDto update(int userId, UserDto userDto) {
-        User user = userDao.update(userId, UserMapper.toUser(userDto));
-        log.info("User successfully update");
-        return UserMapper.toUserDto(user);
+    public UserDto update(long userId, UserDto userDto) {
+        Optional<User> user = userRepository.findById((long) userId);
+        User userUpdate = UserMapper.toUser(userDto);
+        if (user.isPresent()) {
+            if (userUpdate.getName() != null && !userUpdate.getName().isBlank()) {
+                user.get().setName(userUpdate.getName());
+            }
+            if (userUpdate.getEmail() != null && !userUpdate.getEmail().isBlank()) {
+                user.get().setEmail(userUpdate.getEmail());
+            }
+            return UserMapper.toUserDto(userRepository.save(user.get()));
+        } else {
+            throw new ValidationFieldsException("User by ID not found");
+        }
     }
 
     @Override
-    public UserDto get(int userId) {
-        User user = userDao.get(userId);
-        log.info("Return user by Id successfully");
-        return UserMapper.toUserDto(user);
+    public UserDto get(long userId) {
+        if (userRepository.findById(userId).isPresent()) {
+            return UserMapper.toUserDto(userRepository.findById(userId).get());
+        } else {
+            throw new ValidationFieldsException("User by ID not found");
+        }
     }
 
     @Override
     public List<User> getAll() {
-        List<User> users = userDao.getAll();
-        log.info("Return user list successfully");
-        return users;
+        return userRepository.findAll();
     }
 
     @Override
     public Boolean delete(long userId) {
-        Boolean isDelete = userDao.delete(userId);
-        log.info("Delete user by id successfully");
-        return isDelete;
+        userRepository.deleteById(userId);
+        return true;
     }
-
-    @Override
-    public void validationOwner(Long owner) {
-        userDao.get(owner);
-    }
-
 }
