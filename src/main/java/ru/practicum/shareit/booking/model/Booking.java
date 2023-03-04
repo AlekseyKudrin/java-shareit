@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.booking.model.cons.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -29,7 +30,7 @@ import java.time.LocalDateTime;
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "START_DATE")
     private LocalDateTime start;
     @Column(name = "END_DATE")
@@ -47,5 +48,5 @@ public class Booking {
     )
     private User booker;
     @Enumerated(EnumType.STRING)
-    private BookingStatus    status;
+    private BookingStatus status;
 }

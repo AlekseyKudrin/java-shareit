@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.booking.model.cons.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,17 +17,17 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class BookingDto {
-    long id;
+
+    public interface Create{
+    }
+    Long id;
+    @NotBlank(message = "Field start cannot be empty", groups = BookingDto.Create.class)
     LocalDateTime start;
+    @NotBlank(message = "Field end cannot be empty", groups = BookingDto.Create.class)
     LocalDateTime end;
+    @NotBlank(message = "Field itemId cannot be empty", groups = BookingDto.Create.class)
+    Long itemId;
     Item item;
     User booker;
     BookingStatus status;
-
-    public BookingDto(long id, LocalDateTime start, LocalDateTime end, BookingStatus status) {
-        this.id = id;
-        this.start = start;
-        this.end = end;
-        this.status = status;
-    }
 }
