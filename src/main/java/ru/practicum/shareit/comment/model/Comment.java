@@ -1,4 +1,3 @@
-/*
 package ru.practicum.shareit.comment.model;
 
 import lombok.AccessLevel;
@@ -41,4 +40,3 @@ public class Comment {
         this.text = text;
     }
 }
-*/

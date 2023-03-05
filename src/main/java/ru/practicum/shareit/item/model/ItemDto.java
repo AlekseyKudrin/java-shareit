@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.comment.model.Comment;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -21,4 +23,9 @@ public class ItemDto {
     String description;
     @NotNull
     Boolean available;
+    Long ownerId;
+    Long requestId;
+//    BookingDtoWithId lastBooking;
+//    BookingDtoWithId nextBooking;
+    List<Comment> comments;
 }

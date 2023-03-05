@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.comment.model.Comment;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Items")
@@ -28,4 +30,6 @@ public class Item {
     Long owner;
     @Column(name = "REQUEST_ID")
     Long requestId;
+    @Transient
+    List<Comment> comments;
 }

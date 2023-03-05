@@ -3,17 +3,22 @@ package ru.practicum.shareit.item.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.dao.BookingRepository;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.cons.BookingStatus;
+import ru.practicum.shareit.comment.dao.CommentRepository;
+import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,6 +29,8 @@ public class ItemServiceImpl implements ItemService {
 
     private final UserService userService;
     private final ItemRepository itemRepository;
+    private final CommentRepository commentRepository;
+    private final BookingRepository bookingRepository;
 
     @Override
     public ItemDto create(long userId, ItemDto itemDto) {
@@ -46,10 +53,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto get(long itemId) {
         Optional<Item> item = itemRepository.findItemById(itemId);
         if (item.isPresent()) {
-            ItemDto itemDto = ItemMapper.toDto(item);
-            addCommentsToItem(itemDto);
-            setBookings(itemDto, userId);
-            return itemDto;
+            return ItemMapper.toItemDto(item.orElseThrow());
         }else{
             throw new ValidationFieldsException("item not found");
         }
@@ -57,12 +61,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAll(long userId) {
-        return null;
+        return itemRepository.findItemsByOwner(userId).stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ItemDto> search(String text) {
-        return null;
+        if (text.isBlank() || text.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return itemRepository.searchItems(text).stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 
     private Item updateItem(Item item, Item itemUpdate) {
@@ -74,13 +85,17 @@ public class ItemServiceImpl implements ItemService {
         return item;
     }
 
-    private ItemDto addCommentsToItem(ItemDto itemDto) {
-        List<Comment> comments = commentRepository.findAllByItemId(itemDto.getId());
-        itemDto.setComments(
-                comments.stream()
-                        .map(CommentMapper::toDto)
-                        .collect(Collectors.toList())
-        );
-        return itemDto;
+    private void addComments(Item item) {
+        List<Comment> comments = commentRepository.findAllByItemId(item.getId());
+        item.setComments(comments);
     }
+
+/*    private void addBookings(ItemDto itemDto, long bookerId) {
+        Comparator<Booking> comparator = (b1, b2) -> b1.getStart().isBefore(b2.getStart()) ? -1 : b1.getStart().isAfter(b2.getStart()) ? 1 : 0;
+        List<Booking> bookings = bookingRepository.findAllByItemIdAndBooker_IdNotAndStatusNot(item.getId(), bookerId, BookingStatus.REJECTED);
+        bookings.sort(comparator);
+        for (Booking booking : bookings) {
+            itemDto.setNextBooking(BookingMapper.toDtoWithId(booking));
+        }
+    }*/
 }
