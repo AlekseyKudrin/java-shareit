@@ -6,12 +6,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "Item")
@@ -21,15 +16,18 @@ import javax.persistence.Table;
 @AllArgsConstructor
 public class Item {
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @Column(name = "name")
+    @Column(name = "NAME")
     String name;
-    @Column(name = "description")
+    @Column(name = "DESCRIPTION")
     String description;
-    @Column(name = "available")
+    @Column(name = "IS_AVAILABLE")
     Boolean available;
-    @Column(name = "owner")
+    @Transient
+//    @Column(name = "OWNER_ID")
     Long owner;
+    @Transient
+//  @Column(name = "REQUEST_ID")
+    Long requestId;
 }
