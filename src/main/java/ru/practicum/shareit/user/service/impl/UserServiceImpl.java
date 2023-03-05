@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(long userId, UserDto userDto) {
-        Optional<User> user = userRepository.findById((long) userId);
+        Optional<User> user = userRepository.findById(userId);
         User userUpdate = UserMapper.toUser(userDto);
         if (user.isPresent()) {
             if (userUpdate.getName() != null && !userUpdate.getName().isBlank()) {

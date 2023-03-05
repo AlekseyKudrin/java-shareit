@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Item")
+@Table(name = "Items")
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
@@ -24,10 +24,8 @@ public class Item {
     String description;
     @Column(name = "IS_AVAILABLE")
     Boolean available;
-    @Transient
-//    @Column(name = "OWNER_ID")
+    @Column(name = "OWNER_ID")
     Long owner;
-    @Transient
-//  @Column(name = "REQUEST_ID")
+    @Column(name = "REQUEST_ID")
     Long requestId;
 }
