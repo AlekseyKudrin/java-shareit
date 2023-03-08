@@ -1,7 +1,7 @@
 package ru.practicum.shareit.booking.model;
 
 
-import ru.practicum.shareit.booking.model.cons.BookingStatus;
+import ru.practicum.shareit.booking.model.con.BookingStatus;
 
 public class BookingMapper {
     public static BookingDto toBookingDto(Booking booking) {

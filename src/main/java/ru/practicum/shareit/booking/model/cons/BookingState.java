@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.model.cons;
+package ru.practicum.shareit.booking.model.con;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

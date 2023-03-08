@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exceptionHandler.exception.ConflictDataException;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 
+import javax.validation.ValidationException;
 import java.util.Arrays;
 
 @Slf4j
@@ -31,6 +32,13 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handlerMethodArgumentNotValidExceptionException(final MethodArgumentNotValidException e) {
+        log.error("Data input incorrect: {}", e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerValidationException(final ValidationException e) {
         log.error("Data input incorrect: {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
