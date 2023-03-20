@@ -7,8 +7,9 @@ import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingDto;
 import ru.practicum.shareit.booking.model.BookingMapper;
-import ru.practicum.shareit.booking.model.con.BookingStatus;
+import ru.practicum.shareit.booking.model.cons.BookingStatus;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dao.UserRepository;
@@ -37,12 +38,12 @@ public class BookingServiceImpl implements BookingService {
                 appropriateBookerAndItem(userId, bookingDto)
         );
         booking.setStatus(BookingStatus.WAITING);
-        if (!booking.getItem().getAvailable())
+        if (!bookingDto.getItem().getAvailable())
             throw new ValidationException("Этот item недоступен");
-        if (booking.getItem().getOwner() == userId) {
+        if (bookingDto.getItem().getOwner() == userId) {
             throw new NoSuchElementException("User не может забронировать свой же item");
         }
-        if (booking.getEnd().isBefore(booking.getStart()) || booking.getStart().isBefore(LocalDateTime.now())) {
+        if (bookingDto.getEnd().isBefore(bookingDto.getStart()) || bookingDto.getStart().isBefore(LocalDateTime.now())) {
             throw new ValidationException("Дата окончания раньше даты начала");
         }
         if (bookingDto.getStart().isBefore(LocalDateTime.now())) {
@@ -138,9 +139,13 @@ public class BookingServiceImpl implements BookingService {
 
     private BookingDto appropriateBookerAndItem(long userId, BookingDto bookingDto) {
         User user = userRepository.findById(userId).orElseThrow();
-        Item item = itemRepository.findById(bookingDto.getItemId()).orElseThrow();
+        try {
+            Item item = itemRepository.findById(bookingDto.getItemId()).orElseThrow();
+            bookingDto.setItem(item);
+        } catch (NoSuchElementException e) {
+            throw new ValidationFieldsException("item not found");
+        }
         bookingDto.setBooker(user);
-        bookingDto.setItem(item);
         return bookingDto;
     }
 

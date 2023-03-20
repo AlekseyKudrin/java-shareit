@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingTime;
 import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.comment.model.CommentDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -25,7 +28,7 @@ public class ItemDto {
     Boolean available;
     Long ownerId;
     Long requestId;
-//    BookingDtoWithId lastBooking;
-//    BookingDtoWithId nextBooking;
-    List<Comment> comments;
+    BookingTime lastBooking;
+    BookingTime nextBooking;
+    List<CommentDto> comments;
 }

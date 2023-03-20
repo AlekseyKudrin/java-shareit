@@ -2,6 +2,7 @@ package ru.practicum.shareit.exceptionHandler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -11,6 +12,7 @@ import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException
 
 import javax.validation.ValidationException;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @RestControllerAdvice
@@ -49,4 +51,11 @@ public class ErrorHandler {
         log.error("Error from: {}", Arrays.toString(e.getStackTrace()));
         return new ErrorResponse(e.getMessage());
     }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handlerNoSuchElementException(final NoSuchElementException e) {
+        log.error("No value present");
+        return new ErrorResponse(e.getMessage());
+    }
+
 }

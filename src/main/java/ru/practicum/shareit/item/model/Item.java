@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.booking.model.BookingTime;
 import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.comment.model.CommentDto;
 
 import javax.persistence.*;
 import java.util.List;
@@ -31,5 +33,9 @@ public class Item {
     @Column(name = "REQUEST_ID")
     Long requestId;
     @Transient
-    List<Comment> comments;
+    BookingTime lastBooking;
+    @Transient
+    BookingTime nextBooking;
+    @Transient
+    List<CommentDto> comments;
 }

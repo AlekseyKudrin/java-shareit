@@ -1,7 +1,7 @@
 package ru.practicum.shareit.booking.model;
 
 
-import ru.practicum.shareit.booking.model.con.BookingStatus;
+import ru.practicum.shareit.booking.model.cons.BookingStatus;
 
 public class BookingMapper {
     public static BookingDto toBookingDto(Booking booking) {
@@ -24,6 +24,17 @@ public class BookingMapper {
                 bookingDto.getItem(),
                 bookingDto.getBooker(),
                 BookingStatus.WAITING
+        );
+    }
+
+    public static BookingTime toBookingTime(Booking booking) {
+        return new BookingTime(
+                booking.getId(),
+                booking.getStart(),
+                booking.getEnd(),
+                booking.getItem().getId(),
+                booking.getBooker().getId(),
+                booking.getStatus()
         );
     }
 }

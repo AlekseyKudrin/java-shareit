@@ -4,17 +4,27 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dao.BookingRepository;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingMapper;
+import ru.practicum.shareit.booking.model.cons.BookingStatus;
 import ru.practicum.shareit.comment.dao.CommentRepository;
 import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.comment.model.CommentDto;
+import ru.practicum.shareit.comment.model.CommentMapper;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.user.model.UserDto;
+import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
+import javax.validation.ValidationException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,7 +60,10 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto get(long itemId) {
         Optional<Item> item = itemRepository.findItemById(itemId);
         if (item.isPresent()) {
-            return ItemMapper.toItemDto(item.orElseThrow());
+            ItemDto itemDto = ItemMapper.toItemDto(item.get());
+            addCommentsItem(itemDto);
+            addBookingTime(itemDto, itemId);
+            return addCommentsItem(itemDto);
         }else{
             throw new ValidationFieldsException("item not found");
         }
@@ -60,6 +73,8 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> getAll(long userId) {
         return itemRepository.findItemsByOwner(userId).stream()
                 .map(ItemMapper::toItemDto)
+                .map(i -> addBookingTime(i, userId))
+                .map(this::addCommentsItem)
                 .collect(Collectors.toList());
     }
 
@@ -73,6 +88,20 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public CommentDto addComment(long userId, long itemId, CommentDto commentDto) {
+        UserDto userDto = userService.get(userId);
+        Item item = itemRepository.findById(itemId).orElseThrow();
+        List<Booking> bookings = bookingRepository
+                .findAllByItemIdAndBooker_IdAndStatusAndEndIsBefore(itemId, userId, BookingStatus.APPROVED, LocalDateTime.now());
+        if (bookings.isEmpty())
+            throw new ValidationException("Item not bookings this user");
+        Comment comment = CommentMapper.toComment(commentDto);
+        comment.setUser(UserMapper.toUser(userDto));
+        comment.setItem(item);
+        return CommentMapper.toCommentDto(commentRepository.save(comment));
+    }
+
     private Item updateItem(Item item, Item itemUpdate) {
         if (itemUpdate.getName() != null) item.setName(itemUpdate.getName());
         if (itemUpdate.getDescription() != null) item.setDescription(itemUpdate.getDescription());
@@ -82,17 +111,21 @@ public class ItemServiceImpl implements ItemService {
         return item;
     }
 
-    private void addComments(Item item) {
-        List<Comment> comments = commentRepository.findAllByItemId(item.getId());
-        item.setComments(comments);
+    private ItemDto addCommentsItem(ItemDto itemDto) {
+        List<Comment> comments = commentRepository.findAllByItemId(itemDto.getId());
+        itemDto.setComments(comments.stream()
+                .map(CommentMapper::toCommentDto)
+                .collect(Collectors.toList()));
+        return itemDto;
     }
 
-/*    private void addBookings(ItemDto itemDto, long bookerId) {
+    private ItemDto addBookingTime(ItemDto itemDto, long bookerId) {
         Comparator<Booking> comparator = (b1, b2) -> b1.getStart().isBefore(b2.getStart()) ? -1 : b1.getStart().isAfter(b2.getStart()) ? 1 : 0;
-        List<Booking> bookings = bookingRepository.findAllByItemIdAndBooker_IdNotAndStatusNot(item.getId(), bookerId, BookingStatus.REJECTED);
+        List<Booking> bookings = bookingRepository.findAllByItemIdAndBooker_IdNotAndStatusNot(itemDto.getId(), bookerId, BookingStatus.REJECTED);
         bookings.sort(comparator);
         for (Booking booking : bookings) {
-            itemDto.setNextBooking(BookingMapper.toDtoWithId(booking));
+            itemDto.setNextBooking(BookingMapper.toBookingTime(booking));
         }
-    }*/
+        return itemDto;
+    }
 }

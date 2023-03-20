@@ -23,6 +23,8 @@ public class ItemMapper {
                 item.getAvailable(),
                 item.getOwner(),
                 item.getRequestId(),
+                item.getLastBooking(),
+                item.getNextBooking(),
                 item.getComments()
         );
     }

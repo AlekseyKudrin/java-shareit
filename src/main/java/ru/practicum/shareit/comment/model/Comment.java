@@ -11,7 +11,7 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Comment")
+@Table(name = "COMMENTS")
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
@@ -19,20 +19,20 @@ import javax.persistence.*;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String text;
+    Long id;
+    String text;
     @ManyToOne
     @JoinColumn(
             name = "ITEM_ID",
             referencedColumnName = "ID"
     )
-    private Item item;
+    Item item;
     @OneToOne
     @JoinColumn(
             name = "AUTHOR_ID",
-            referencedColumnName = "id"
+            referencedColumnName = "ID"
     )
-    private User author;
+    User user;
 
 
     public Comment(Long id, String text) {
