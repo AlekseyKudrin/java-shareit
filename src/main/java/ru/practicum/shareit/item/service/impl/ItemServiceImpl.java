@@ -41,7 +41,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto create(long userId, ItemDto itemDto) {
-        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(userService.get(userId).getId(),itemDto)));
+        return ItemMapper.toItemDto(itemRepository.save(ItemMapper.toItem(userService.get(userId).getId(), itemDto)));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ItemServiceImpl implements ItemService {
         if (item.isPresent() && itemUpdate.getOwner().equals(item.orElseThrow().getOwner())) {
             return ItemMapper.toItemDto(
                     itemRepository.save(updateItem(item.orElseThrow(), itemUpdate)));
-        }else{
+        } else {
             throw new ValidationFieldsException("the owner of the item is not correct");
         }
     }
@@ -66,7 +66,7 @@ public class ItemServiceImpl implements ItemService {
                 addBookingTime(itemDto, itemId);
             }
             return addCommentsItem(itemDto);
-        }else{
+        } else {
             throw new ValidationFieldsException("item not found");
         }
     }
@@ -131,7 +131,7 @@ public class ItemServiceImpl implements ItemService {
                 itemDto.setLastBooking(BookingMapper.toBookingTime(booking));
             } else {
                 itemDto.setNextBooking(BookingMapper.toBookingTime(booking));
-        }
+            }
 //        if (bookings.size() != 0) {
 //            Booking last = bookings.get(bookings.size()-2);
 //            Booking next = bookings.get(bookings.size()-1);
