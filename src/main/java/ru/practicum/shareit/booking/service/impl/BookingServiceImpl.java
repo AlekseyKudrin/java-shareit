@@ -58,7 +58,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
         if (booking.getStatus() == BookingStatus.APPROVED)
             throw new ValidationException("Статус не может быть изменен");
-        if (Objects.equals(booking.getBooker().getId(), userId)) {
+        if (booking.getItem().getOwner() != userId) {
             throw new NoSuchElementException("Букер не может изменить статус бронирования");
         }
         booking.setStatus(bookingStatus);

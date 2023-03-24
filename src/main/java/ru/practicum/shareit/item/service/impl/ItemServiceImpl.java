@@ -57,12 +57,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto get(long itemId) {
+    public ItemDto get(long userId, long itemId) {
         Optional<Item> item = itemRepository.findItemById(itemId);
         if (item.isPresent()) {
             ItemDto itemDto = ItemMapper.toItemDto(item.get());
             addCommentsItem(itemDto);
-            addBookingTime(itemDto, itemId);
+            if (userId == itemDto.getOwnerId()) {
+                addBookingTime(itemDto, itemId);
+            }
             return addCommentsItem(itemDto);
         }else{
             throw new ValidationFieldsException("item not found");
@@ -124,7 +126,20 @@ public class ItemServiceImpl implements ItemService {
         List<Booking> bookings = bookingRepository.findAllByItemIdAndBooker_IdNotAndStatusNot(itemDto.getId(), bookerId, BookingStatus.REJECTED);
         bookings.sort(comparator);
         for (Booking booking : bookings) {
-            itemDto.setNextBooking(BookingMapper.toBookingTime(booking));
+//            itemDto.setNextBooking(BookingMapper.toBookingTime(booking));
+            if (booking.getStart().isBefore(LocalDateTime.now())) {
+                itemDto.setLastBooking(BookingMapper.toBookingTime(booking));
+            } else {
+                itemDto.setNextBooking(BookingMapper.toBookingTime(booking));
+        }
+//        if (bookings.size() != 0) {
+//            Booking last = bookings.get(bookings.size()-2);
+//            Booking next = bookings.get(bookings.size()-1);
+//            if (bookings.get(0).getStart().isBefore(LocalDateTime.now())) {
+//                itemDto.setLastBooking(BookingMapper.toBookingTime(bookings.get(0)));
+//            } else {
+//                itemDto.setNextBooking(BookingMapper.toBookingTime(bookings.get(0)));
+//            }
         }
         return itemDto;
     }

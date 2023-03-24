@@ -8,7 +8,7 @@ import java.util.List;
 public interface ItemService {
     ItemDto create(long userId, ItemDto itemDto);
     ItemDto update(long userId, long itemId, ItemDto itemDto);
-    ItemDto get(long itemId);
+    ItemDto get(long userId, long itemId);
     List<ItemDto> getAll(long userId);
     List<ItemDto> search(String text);
     CommentDto addComment(long userId, long itemId, CommentDto commentDto);

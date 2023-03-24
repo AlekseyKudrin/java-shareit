@@ -1,11 +1,13 @@
-package ru.practicum.shareit.booking.model.con;
+package ru.practicum.shareit.booking.model.cons;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+
+/* class not used доработать сервис*/
 @Getter
 @RequiredArgsConstructor
-public enum BookingState {
+enum BookingState {
     ALL("ALL"),
     CURRENT("CURRENT"),
     PAST("PAST"),
