@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingTime;
-import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.comment.model.CommentDto;
 
 import javax.validation.constraints.NotBlank;
