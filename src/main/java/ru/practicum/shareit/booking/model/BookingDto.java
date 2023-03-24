@@ -18,8 +18,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BookingDto {
 
-    public interface Create{
+    public interface Create {
     }
+
     Long id;
     @NotNull(message = "Field start cannot be empty", groups = Create.class)
     LocalDateTime start;
