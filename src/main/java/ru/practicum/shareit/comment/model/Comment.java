@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "COMMENTS")
@@ -33,6 +34,8 @@ public class Comment {
             referencedColumnName = "ID"
     )
     User user;
+    @Column(name = "created")
+    LocalDateTime created;
 
 
     public Comment(Long id, String text) {

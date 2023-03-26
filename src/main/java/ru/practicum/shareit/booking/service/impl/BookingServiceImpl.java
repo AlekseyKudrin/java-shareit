@@ -38,8 +38,9 @@ public class BookingServiceImpl implements BookingService {
                 appropriateBookerAndItem(userId, bookingDto)
         );
         booking.setStatus(BookingStatus.WAITING);
-        if (!bookingDto.getItem().getAvailable())
+        if (!bookingDto.getItem().getAvailable()) {
             throw new ValidationException("Этот item недоступен");
+        }
         if (bookingDto.getItem().getOwner() == userId) {
             throw new NoSuchElementException("User не может забронировать свой же item");
         }
@@ -48,6 +49,9 @@ public class BookingServiceImpl implements BookingService {
         }
         if (bookingDto.getStart().isBefore(LocalDateTime.now())) {
             throw new ValidationException("Дата начала в прошлом");
+        }
+        if (bookingDto.getStart().isEqual(bookingDto.getEnd())) {
+            throw new ValidationException("йцукйцукйцук");
         }
         return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
