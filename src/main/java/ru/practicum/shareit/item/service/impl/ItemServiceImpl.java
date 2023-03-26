@@ -99,6 +99,7 @@ public class ItemServiceImpl implements ItemService {
         if (bookings.isEmpty())
             throw new ValidationException("Item not bookings this user");
         Comment comment = CommentMapper.toComment(commentDto);
+        comment.setCreated(LocalDateTime.now());
         comment.setUser(UserMapper.toUser(userDto));
         comment.setItem(item);
         return CommentMapper.toCommentDto(commentRepository.save(comment));
@@ -131,6 +132,7 @@ public class ItemServiceImpl implements ItemService {
                 itemDto.setLastBooking(BookingMapper.toBookingTime(booking));
             } else {
                 itemDto.setNextBooking(BookingMapper.toBookingTime(booking));
+                break;
             }
 //        if (bookings.size() != 0) {
 //            Booking last = bookings.get(bookings.size()-2);

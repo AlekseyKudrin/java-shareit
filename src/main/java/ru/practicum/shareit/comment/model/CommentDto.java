@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,4 +21,5 @@ public class CommentDto {
     String text;
     Long item;
     String authorName;
+    LocalDateTime created;
 }

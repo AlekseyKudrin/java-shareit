@@ -51,6 +51,7 @@ create table if not exists comments
     text      VARCHAR(1000),
     item_id   BIGINT,
     author_id BIGINT,
+    created TIMESTAMP,
     constraint COMMENTS_PK
         primary key (id)
 );
