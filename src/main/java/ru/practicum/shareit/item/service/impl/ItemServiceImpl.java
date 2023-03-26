@@ -6,10 +6,9 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingMapper;
-import ru.practicum.shareit.booking.model.cons.BookingStatus;
+import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.comment.dao.CommentRepository;
 import ru.practicum.shareit.comment.model.Comment;
-import ru.practicum.shareit.comment.model.CommentDto;
 import ru.practicum.shareit.comment.model.CommentMapper;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 import ru.practicum.shareit.item.dao.ItemRepository;
@@ -17,11 +16,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.user.model.UserDto;
-import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -90,21 +86,6 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public CommentDto addComment(long userId, long itemId, CommentDto commentDto) {
-        UserDto userDto = userService.get(userId);
-        Item item = itemRepository.findById(itemId).orElseThrow();
-        List<Booking> bookings = bookingRepository
-                .findAllByItemIdAndBooker_IdAndStatusAndEndIsBefore(itemId, userId, BookingStatus.APPROVED, LocalDateTime.now());
-        if (bookings.isEmpty())
-            throw new ValidationException("Item not bookings this user");
-        Comment comment = CommentMapper.toComment(commentDto);
-        comment.setCreated(LocalDateTime.now());
-        comment.setUser(UserMapper.toUser(userDto));
-        comment.setItem(item);
-        return CommentMapper.toCommentDto(commentRepository.save(comment));
-    }
-
     private Item updateItem(Item item, Item itemUpdate) {
         if (itemUpdate.getName() != null) item.setName(itemUpdate.getName());
         if (itemUpdate.getDescription() != null) item.setDescription(itemUpdate.getDescription());
@@ -127,21 +108,12 @@ public class ItemServiceImpl implements ItemService {
         List<Booking> bookings = bookingRepository.findAllByItemIdAndBooker_IdNotAndStatusNot(itemDto.getId(), bookerId, BookingStatus.REJECTED);
         bookings.sort(comparator);
         for (Booking booking : bookings) {
-//            itemDto.setNextBooking(BookingMapper.toBookingTime(booking));
             if (booking.getStart().isBefore(LocalDateTime.now())) {
                 itemDto.setLastBooking(BookingMapper.toBookingTime(booking));
             } else {
                 itemDto.setNextBooking(BookingMapper.toBookingTime(booking));
                 break;
             }
-//        if (bookings.size() != 0) {
-//            Booking last = bookings.get(bookings.size()-2);
-//            Booking next = bookings.get(bookings.size()-1);
-//            if (bookings.get(0).getStart().isBefore(LocalDateTime.now())) {
-//                itemDto.setLastBooking(BookingMapper.toBookingTime(bookings.get(0)));
-//            } else {
-//                itemDto.setNextBooking(BookingMapper.toBookingTime(bookings.get(0)));
-//            }
         }
         return itemDto;
     }

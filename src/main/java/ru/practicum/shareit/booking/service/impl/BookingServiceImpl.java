@@ -7,7 +7,7 @@ import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingDto;
 import ru.practicum.shareit.booking.model.BookingMapper;
-import ru.practicum.shareit.booking.model.cons.BookingStatus;
+import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptionHandler.exception.UnsupportedStateException;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
@@ -39,19 +39,19 @@ public class BookingServiceImpl implements BookingService {
         );
         booking.setStatus(BookingStatus.WAITING);
         if (!bookingDto.getItem().getAvailable()) {
-            throw new ValidationException("Этот item недоступен");
+            throw new ValidationException("This item is not available");
         }
         if (bookingDto.getItem().getOwner() == userId) {
-            throw new NoSuchElementException("User не может забронировать свой же item");
+            throw new NoSuchElementException("The user cannot book their item");
         }
         if (bookingDto.getEnd().isBefore(bookingDto.getStart()) || bookingDto.getStart().isBefore(LocalDateTime.now())) {
-            throw new ValidationException("Дата окончания раньше даты начала");
+            throw new ValidationException("Date end cannot be before start booking");
         }
         if (bookingDto.getStart().isBefore(LocalDateTime.now())) {
-            throw new ValidationException("Дата начала в прошлом");
+            throw new ValidationException("Date start cannot be before now");
         }
         if (bookingDto.getStart().isEqual(bookingDto.getEnd())) {
-            throw new ValidationException("йцукйцукйцук");
+            throw new ValidationException("Start date and end date cannot be equal");
         }
         return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
@@ -61,9 +61,9 @@ public class BookingServiceImpl implements BookingService {
         BookingStatus bookingStatus = isApproved ? BookingStatus.APPROVED : BookingStatus.REJECTED;
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
         if (booking.getStatus() == BookingStatus.APPROVED)
-            throw new ValidationException("Статус не может быть изменен");
+            throw new ValidationException("Status cannot be changed");
         if (booking.getItem().getOwner() != userId) {
-            throw new NoSuchElementException("Букер не может изменить статус бронирования");
+            throw new NoSuchElementException("The booking status can only be changed by the owner of the item");
         }
         booking.setStatus(bookingStatus);
         bookingRepository.save(booking);
@@ -75,7 +75,7 @@ public class BookingServiceImpl implements BookingService {
         userRepository.findById(userId).orElseThrow();
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
         if (!(Objects.equals(booking.getBooker().getId(), userId) || Objects.equals(booking.getItem().getOwner(), userId)))
-            throw new NoSuchElementException(String.format("User_id = %d и booking_id = %d не связаны", userId, bookingId));
+            throw new NoSuchElementException(String.format("User_id = %d can't access booking_id = %d", userId, bookingId));
         return BookingMapper.toBookingDto(booking);
     }
 

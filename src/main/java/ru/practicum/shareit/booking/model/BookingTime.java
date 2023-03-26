@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.shareit.booking.model.cons.BookingStatus;
+import ru.practicum.shareit.booking.model.enums.BookingStatus;
 
 import java.time.LocalDateTime;
 
