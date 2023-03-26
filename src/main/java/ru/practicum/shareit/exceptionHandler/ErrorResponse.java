@@ -1,13 +1,13 @@
 package ru.practicum.shareit.exceptionHandler;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
+
+@Getter
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ErrorResponse {
-    private final String description;
-
-    public ErrorResponse(String description) {
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
-    }
+    final String error;
 }

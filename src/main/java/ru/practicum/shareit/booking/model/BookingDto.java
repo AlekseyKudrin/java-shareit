@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.booking.model.cons.BookingStatus;
+import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -18,8 +18,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BookingDto {
 
-    public interface Create{
+    public interface Create {
     }
+
     Long id;
     @NotNull(message = "Field start cannot be empty", groups = Create.class)
     LocalDateTime start;

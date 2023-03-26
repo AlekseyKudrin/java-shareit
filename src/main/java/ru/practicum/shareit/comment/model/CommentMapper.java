@@ -1,10 +1,5 @@
 package ru.practicum.shareit.comment.model;
 
-import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.BookingDto;
-import ru.practicum.shareit.booking.model.BookingTime;
-import ru.practicum.shareit.booking.model.cons.BookingStatus;
-
 public class CommentMapper {
 
     public static Comment toComment(CommentDto commentDto) {
