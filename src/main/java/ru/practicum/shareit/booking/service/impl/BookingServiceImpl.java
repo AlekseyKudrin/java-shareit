@@ -7,7 +7,7 @@ import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingDto;
 import ru.practicum.shareit.booking.model.BookingMapper;
-import ru.practicum.shareit.booking.model.cons.BookingStatus;
+import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 import ru.practicum.shareit.item.dao.ItemRepository;
@@ -17,7 +17,6 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -113,7 +112,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> getAllBookingsOwner(long ownerId, String bookingState) {
         userRepository.findById(ownerId).orElseThrow();
-        List<Booking> result = new ArrayList<>();
+        List<Booking> result;
         switch (bookingState) {
             case "ALL":
                 result = bookingRepository.findAllByItem_OwnerOrderByStartDesc(ownerId);

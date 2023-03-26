@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingMapper;
-import ru.practicum.shareit.booking.model.cons.BookingStatus;
+import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.comment.dao.CommentRepository;
 import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.comment.model.CommentDto;
