@@ -27,7 +27,7 @@ public class User {
     String email;
     @Transient
     @ElementCollection
-    @CollectionTable(name = "Item", joinColumns = @JoinColumn(name = "owner"))
+    @CollectionTable(name = "item", joinColumns = @JoinColumn(name = "owner"))
     @Column(name = "id")
     Set<Integer> itemsId = new HashSet<>();
 }

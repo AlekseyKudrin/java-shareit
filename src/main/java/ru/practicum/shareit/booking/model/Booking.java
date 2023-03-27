@@ -1,9 +1,6 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
@@ -22,31 +19,32 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "BOOKINGS")
-@Data
+@Table(name = "bookings")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "START_DATE")
-    private LocalDateTime start;
-    @Column(name = "END_DATE")
-    private LocalDateTime end;
+    Long id;
+    @Column(name = "start_date")
+    LocalDateTime start;
+    @Column(name = "end_date")
+    LocalDateTime end;
     @OneToOne
     @JoinColumn(
-            name = "ITEM_ID",
-            referencedColumnName = "ID"
+            name = "item_id",
+            referencedColumnName = "id"
     )
     private Item item;
     @OneToOne
     @JoinColumn(
-            name = "BOOKER_ID",
-            referencedColumnName = "ID"
+            name = "booker_id",
+            referencedColumnName = "id"
     )
-    private User booker;
+    User booker;
     @Enumerated(EnumType.STRING)
-    private BookingStatus status;
+    BookingStatus status;
 }

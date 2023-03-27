@@ -12,7 +12,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "Items")
+@Table(name = "items")
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
@@ -21,15 +21,15 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @Column(name = "NAME")
+    @Column(name = "name")
     String name;
-    @Column(name = "DESCRIPTION")
+    @Column(name = "description")
     String description;
-    @Column(name = "IS_AVAILABLE")
+    @Column(name = "is_available")
     Boolean available;
-    @Column(name = "OWNER_ID")
+    @Column(name = "owner_id")
     Long owner;
-    @Column(name = "REQUEST_ID")
+    @Column(name = "request_id")
     Long requestId;
     @Transient
     BookingTime lastBooking;
