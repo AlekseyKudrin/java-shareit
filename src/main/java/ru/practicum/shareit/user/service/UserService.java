@@ -8,13 +8,11 @@ import java.util.List;
 public interface UserService {
     UserDto create(UserDto userDto);
 
-    UserDto update(int userId, UserDto userDto);
+    UserDto update(long userId, UserDto userDto);
 
-    UserDto get(int userId);
+    UserDto get(long userId);
 
     List<User> getAll();
 
     Boolean delete(long userId);
-
-    void validationOwner(Long owner);
 }
