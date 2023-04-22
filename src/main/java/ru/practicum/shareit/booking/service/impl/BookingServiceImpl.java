@@ -102,7 +102,11 @@ public class BookingServiceImpl implements BookingService {
                 result = bookingRepository.findAllByBookerIdAndStatus(userId, BookingStatus.REJECTED);
                 break;
             default:
-                throw new ValidationException("Unknown state: " + bookingState);
+                try {
+                    throw new Throwable();
+                } catch (Throwable e) {
+                    throw new RuntimeException(e);
+                }
         }
         return result.stream()
                 .map(BookingMapper::toBookingDto)
@@ -133,7 +137,7 @@ public class BookingServiceImpl implements BookingService {
                 result = bookingRepository.findAllByItem_OwnerAndStatus(ownerId, BookingStatus.REJECTED);
                 break;
             default:
-                throw new ValidationException("Unknown state: " + bookingState);
+                throw new RuntimeException("Unknown state: " + bookingState);
         }
         return result.stream()
                 .map(BookingMapper::toBookingDto)

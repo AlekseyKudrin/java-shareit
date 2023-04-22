@@ -34,16 +34,14 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final UserRepository userRepository;
     @Override
     public ItemRequestDto create(long userId, ItemRequestDto itemRequestDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException("Пользователь не найден"));
+        User user = userRepository.findById(userId).get();
         itemRequestDto.setCreated(LocalDateTime.now());
-        ItemRequest itemRequest = requestRepository.save(ItemRequestMapper.toItemRequest(itemRequestDto, user));
-        log.info("Запрос создан с id {}", itemRequest.getId());
-        return ItemRequestMapper.toItemRequestDto(itemRequest);
+       return ItemRequestMapper.toItemRequestDto(requestRepository.save(ItemRequestMapper.toItemRequest(itemRequestDto, user)));
     }
 
     @Override
     public List<ItemRequestDto> getRequestsOwner(long userId) {
-        userRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException("Пользователь не найден"));
+        userRepository.findById(userId).get();
         List<ItemRequestDto> responseList = requestRepository.findAllByRequestorId(userId).stream()
                 .map(ItemRequestMapper::toItemRequestDto)
                 .collect(Collectors.toList());
@@ -51,21 +49,20 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> getAll(long userId, long from, long size) {
-        long page = from / size;
+    public List<ItemRequestDto> getAll(long userId, int from, int size) {
+        int page = from / size;
         PageRequest pageRequest = PageRequest.of(page, size);
-        List<ItemRequestDtoResponse> responseList = requestRepository.findAllPageable(userId, pageRequest).stream()
-                .map(ItemRequestMapper::toItemRequestDtoResponse)
+        List<ItemRequestDto> responseList = requestRepository.findAllPageable(userId, pageRequest).stream()
+                .map(ItemRequestMapper::toItemRequestDto)
                 .collect(Collectors.toList());
         return setItemsToRequests(responseList);
     }
 
     @Override
     public ItemRequestDto getById(long userId, long requestId) {
-        userRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException("Пользователь не найден"));
-        ItemRequest itemRequest = requestRepository.findById(requestId).orElseThrow(() ->
-                new ObjectNotFoundException("Запрос не найден"));
-        List<ItemDto> items = itemRepository.findByItemRequestId(requestId).stream()
+        userRepository.findById(userId);
+        ItemRequest itemRequest = requestRepository.findById(requestId).get();
+        List<ItemDto> items = itemRepository.findItemByRequestId(requestId).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
         ItemRequestDto itemRequestDtoResponse = ItemRequestMapper.toItemRequestDto(itemRequest);
@@ -79,7 +76,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<Long> ids = requests.values().stream()
                 .map(ItemRequestDto::getId)
                 .collect(Collectors.toList());
-        List<ItemDto> items = itemRepository.searchByRequestsId(ids).stream()
+        List<ItemDto> items = itemRepository.searchItemByRequestId(ids).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
         items.forEach(itemDto -> requests.get(itemDto.getRequestId()).getItems().add(itemDto));
