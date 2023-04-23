@@ -15,6 +15,7 @@ import ru.practicum.shareit.request.model.ItemRequestMapper;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,16 +33,17 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRequestRepository requestRepository;
 
     private final UserRepository userRepository;
+
     @Override
     public ItemRequestDto create(long userId, ItemRequestDto itemRequestDto) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow();
         itemRequestDto.setCreated(LocalDateTime.now());
        return ItemRequestMapper.toItemRequestDto(requestRepository.save(ItemRequestMapper.toItemRequest(itemRequestDto, user)));
     }
 
     @Override
     public List<ItemRequestDto> getRequestsOwner(long userId) {
-        userRepository.findById(userId).get();
+        userRepository.findById(userId).orElseThrow();
         List<ItemRequestDto> responseList = requestRepository.findAllByRequestorId(userId).stream()
                 .map(ItemRequestMapper::toItemRequestDto)
                 .collect(Collectors.toList());
@@ -60,7 +62,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDto getById(long userId, long requestId) {
-        userRepository.findById(userId);
+        userRepository.findById(userId).orElseThrow();
         ItemRequest itemRequest = requestRepository.findById(requestId).get();
         List<ItemDto> items = itemRepository.findItemByRequestId(requestId).stream()
                 .map(ItemMapper::toItemDto)
@@ -76,7 +78,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         List<Long> ids = requests.values().stream()
                 .map(ItemRequestDto::getId)
                 .collect(Collectors.toList());
-        List<ItemDto> items = itemRepository.searchItemByRequestId(ids).stream()
+        List<ItemDto> items = itemRepository.searchByRequestsId(ids).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
         items.forEach(itemDto -> requests.get(itemDto.getRequestId()).getItems().add(itemDto));
