@@ -8,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.item.model.ItemDto;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,17 +17,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class ItemRequestDto {
-    public interface Create {
-    }
     private Long id;
-
     private Long requestorid;
-
     @NotBlank(groups = Create.class)
     @Size(groups = Create.class, min = 1, max = 200)
     private String description;
-
     private LocalDateTime created;
-
     private List<ItemDto> items;
+
+    public interface Create {
+    }
 }

@@ -34,27 +34,23 @@ import static ru.practicum.shareit.ShareItTests.HEADER;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class ItemRequestControllerTest {
 
-    @MockBean
-    private ItemRequestService itemRequestService;
-
-    @Autowired
-    private MockMvc mvc;
-
     @Autowired
     private final ObjectMapper objectMapper;
-
     User user = new User(
             1L,
             "name",
             "email@email.ru",
             null);
-
     ItemRequestDto itemRequestDto = new ItemRequestDto(
             1L,
             1L,
             "description",
             LocalDateTime.now(),
             new ArrayList<>());
+    @MockBean
+    private ItemRequestService itemRequestService;
+    @Autowired
+    private MockMvc mvc;
 
     @Test
     void create() throws Exception {

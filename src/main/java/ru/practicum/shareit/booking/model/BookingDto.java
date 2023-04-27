@@ -18,9 +18,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BookingDto {
 
-    public interface Create {
-    }
-
     Long id;
     @NotNull(message = "Field start cannot be empty", groups = Create.class)
     LocalDateTime start;
@@ -31,4 +28,6 @@ public class BookingDto {
     Item item;
     User booker;
     BookingStatus status;
+    public interface Create {
+    }
 }
