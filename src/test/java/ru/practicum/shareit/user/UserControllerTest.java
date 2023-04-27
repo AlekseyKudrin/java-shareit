@@ -18,8 +18,12 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
@@ -43,7 +47,7 @@ class UserControllerTest {
     }
 
     @Test
-    void create() throws Exception{
+    void create() throws Exception {
         when(userService.create(any(UserDto.class)))
                 .thenReturn(user1Dto);
 
@@ -68,12 +72,16 @@ class UserControllerTest {
 
     @Test
     void deleteUser() throws Exception {
+        when(userService.delete(1))
+                .thenReturn(true);
+
         mockMvc.perform(delete("/users/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(mapper.writeValueAsString("false")));
+                .andExpect(jsonPath("$").value(true));
     }
+
     @Test
-    void getAll() throws Exception{
+    void getAll() throws Exception {
         when(userService.getAll())
                 .thenReturn(List.of(UserMapper.toUser(user1Dto)));
 
@@ -83,7 +91,7 @@ class UserControllerTest {
     }
 
     @Test
-    void getUser() throws Exception{
+    void getUser() throws Exception {
         when(userService.get(1))
                 .thenReturn(user1Dto);
 
