@@ -7,10 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 public
 class ShareItTests {
 
-    public static final String HEADER = "X-Sharer-User-Id";
-
-    @Test
-    void contextLoads() {
-    }
+	@Test
+	void contextLoads() {
+	}
+	public static final String HEADER = "X-Sharer-User-Id";
 
 }

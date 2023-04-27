@@ -17,14 +17,18 @@ import java.util.List;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class ItemRequestDto {
+    public interface Create {
+    }
+
     private Long id;
+
     private Long requestorid;
+
     @NotBlank(groups = Create.class)
     @Size(groups = Create.class, min = 1, max = 200)
     private String description;
-    private LocalDateTime created;
-    private List<ItemDto> items;
 
-    public interface Create {
-    }
+    private LocalDateTime created;
+
+    private List<ItemDto> items;
 }

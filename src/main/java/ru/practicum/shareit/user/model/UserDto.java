@@ -14,14 +14,16 @@ import javax.validation.constraints.NotBlank;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class UserDto {
+    public interface Create {
+    }
+
+    public interface Update {
+    }
+
     Long id;
     @NotBlank(message = "Field name cannot be empty", groups = Create.class)
     String name;
     @Email(message = "Field email incorrect", groups = {Create.class, Update.class})
     @NotBlank(message = "Field email cannot be empty", groups = Create.class)
     String email;
-    public interface Create {
-    }
-    public interface Update {
-    }
 }

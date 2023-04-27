@@ -11,6 +11,7 @@ import ru.practicum.shareit.exceptionHandler.exception.UnsupportedStateException
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 
 import javax.validation.ValidationException;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 @Slf4j

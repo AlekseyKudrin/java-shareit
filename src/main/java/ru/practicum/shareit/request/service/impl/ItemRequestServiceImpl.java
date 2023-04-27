@@ -2,6 +2,7 @@ package ru.practicum.shareit.request.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dao.ItemRepository;
@@ -14,6 +15,7 @@ import ru.practicum.shareit.request.model.ItemRequestMapper;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDto create(long userId, ItemRequestDto itemRequestDto) {
         User user = userRepository.findById(userId).orElseThrow();
         itemRequestDto.setCreated(LocalDateTime.now());
-        return ItemRequestMapper.toItemRequestDto(requestRepository.save(ItemRequestMapper.toItemRequest(itemRequestDto, user)));
+       return ItemRequestMapper.toItemRequestDto(requestRepository.save(ItemRequestMapper.toItemRequest(itemRequestDto, user)));
     }
 
     @Override
