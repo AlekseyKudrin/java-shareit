@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.model.ItemRequestDto;
@@ -42,6 +43,9 @@ class ItemRequestServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ItemRepository itemRepository;
 
     private final User user = new User(1L, "User1 name", "user1@mail.com", new HashSet<>());
 

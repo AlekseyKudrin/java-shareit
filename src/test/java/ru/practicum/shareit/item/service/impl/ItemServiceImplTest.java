@@ -8,8 +8,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.enums.BookingStatus;
+import ru.practicum.shareit.comment.dao.CommentRepository;
 import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
@@ -44,6 +46,12 @@ class ItemServiceImplTest {
 
     @Mock
     private UserServiceImpl userServiceImpl;
+
+    @Mock
+    private CommentRepository commentRepository;
+
+    @Mock
+    private BookingRepository bookingRepository;
 
     private User user1;
 
