@@ -65,6 +65,14 @@ class UserServiceImplTest {
 
     @Test
     void get() {
+        when(repository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(user));
+
+        UserDto userDto = service.get(user.getId());
+
+        assertEquals(1, userDto.getId());
+        assertEquals("User1 name", userDto.getName());
+        assertEquals("user1@mail.com", userDto.getEmail());
     }
 
     @Test
