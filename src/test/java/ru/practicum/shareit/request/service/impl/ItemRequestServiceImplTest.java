@@ -10,8 +10,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import ru.practicum.shareit.item.dao.ItemRepository;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.model.ItemRequestDto;
@@ -25,7 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
@@ -39,17 +38,12 @@ class ItemRequestServiceImplTest {
     private ItemRequestServiceImpl itemRequestService;
 
     @Mock
-    private ItemRepository itemRepository;
-
-    @Mock
     private ItemRequestRepository requestRepository;
 
     @Mock
     private UserRepository userRepository;
 
-    private LocalDateTime now = LocalDateTime.now();
-
-    private User user = new User(1L, "User1 name", "user1@mail.com", new HashSet<>());
+    private final User user = new User(1L, "User1 name", "user1@mail.com", new HashSet<>());
 
     private ItemRequestDto itemRequestDto = new ItemRequestDto(
             1L,
@@ -60,29 +54,16 @@ class ItemRequestServiceImplTest {
 
     private ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto, user);
 
-    private Item item = new Item(
-            1L,
-            "name",
-            "description",
-            true,
-            1L,
-            1L,
-            null,
-            null,
-            null);
     @Test
     void create() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(user));
 
-        when(requestRepository.save(any())).thenReturn(itemRequest);
-
-
-        ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto, user);
+        when(requestRepository.save(any()))
+                .thenReturn(itemRequest);
 
 
         ItemRequestDto actual = itemRequestService.create(user.getId(), itemRequestDto);
-
-//        itemRequestDto.setCreated(actual.getCreated());
 
         assertEquals(itemRequestDto.getId(), actual.getId());
         verify(requestRepository, Mockito.times(1)).save(any());
@@ -90,29 +71,39 @@ class ItemRequestServiceImplTest {
 
     @Test
     void getRequestsOwner() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
+
+        List<ItemRequestDto> responseList = itemRequestService.getRequestsOwner(user.getId());
+        assertTrue(responseList.isEmpty());
+        verify(requestRepository).findAllByRequestorId(anyLong());
     }
 
     @Test
     void getAll() {
-    }
-
-    @Test
-    void getById() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.ofNullable(user));
 
         when(requestRepository.findAllPageable(anyLong(), any(PageRequest.class)))
                 .thenReturn(new PageImpl<>(List.of(itemRequest)));
 
-/*        List<ItemRequestDto> itemRequestDtos = itemRequestService.getRequestsList(
+        List<ItemRequestDto> all = itemRequestService.getAll(
                 user.getId(),
                 0,
                 10);
 
-        assertEquals(1, itemRequestDtos.size());
-        assertEquals(1, itemRequestDtos.get(0).getId());
-        assertEquals("description", itemRequestDtos.get(0).getDescription());
-        assertEquals(user.getId(), itemRequestDtos.get(0).getRequestorId());
-        assertEquals(Collections.emptyList(), itemRequestDtos.get(0).getItems());*/
+        assertEquals(1, all.size());
+        assertEquals(1, all.get(0).getId());
+        assertEquals("description", all.get(0).getDescription());
+        assertEquals(user.getId(), all.get(0).getRequestorid());
+        assertEquals(Collections.emptyList(), all.get(0).getItems());
+    }
+
+    @Test
+    void getById() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
+
+        List<ItemRequestDto> responseList = itemRequestService.getRequestsOwner(user.getId());
+        assertTrue(responseList.isEmpty());
+        verify(requestRepository).findAllByRequestorId(anyLong());
     }
 }
