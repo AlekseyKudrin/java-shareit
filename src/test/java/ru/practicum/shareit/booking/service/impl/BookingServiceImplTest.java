@@ -20,6 +20,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -107,6 +108,32 @@ class BookingServiceImplTest {
         assertEquals(end, bookingDtoResponse.getEnd());
         assertEquals(item1, bookingDtoResponse.getItem());
         assertEquals(user1, bookingDtoResponse.getBooker());
+
+
+        booking1.getItem().setAvailable(false);
+        ValidationException responses = assertThrows(ValidationException.class,
+                () -> bookingService.create(user2.getId(),
+                        BookingMapper.toBookingDto(booking1)));
+
+        assertEquals("This item not available", responses.getMessage());
+
+
+        booking1.getItem().setAvailable(true);
+        booking1.getItem().setOwner(2L);
+        NoSuchElementException responses2 = assertThrows(NoSuchElementException.class,
+                () -> bookingService.create(user2.getId(),
+                        BookingMapper.toBookingDto(booking1)));
+
+        assertEquals("User cannot book own item", responses2.getMessage());
+
+
+        booking1.getItem().setOwner(1L);
+        booking1.setEnd(start.minusDays(1));
+        ValidationException responses3 = assertThrows(ValidationException.class,
+                () -> bookingService.create(user2.getId(),
+                        BookingMapper.toBookingDto(booking1)));
+
+        assertEquals("End date before start date", responses3.getMessage());
     }
 
     @Test

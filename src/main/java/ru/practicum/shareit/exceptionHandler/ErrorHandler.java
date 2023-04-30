@@ -6,7 +6,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exceptionHandler.exception.ConflictDataException;
 import ru.practicum.shareit.exceptionHandler.exception.UnsupportedStateException;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 
@@ -16,12 +15,12 @@ import java.util.NoSuchElementException;
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handlerConflictDataException(final ConflictDataException e) {
-        log.error("Conflict data input: {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
-    }
+//    @ExceptionHandler
+//    @ResponseStatus(HttpStatus.CONFLICT)
+//    public ErrorResponse handlerConflictDataException(final ConflictDataException e) {
+//        log.error("Conflict data input: {}", e.getMessage());
+//        return new ErrorResponse(e.getMessage());
+//    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)

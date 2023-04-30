@@ -13,6 +13,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.comment.dao.CommentRepository;
 import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemDto;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -71,8 +73,6 @@ class ItemServiceImplTest {
     @BeforeEach
     void beforeEach() {
         now = LocalDateTime.now();
-//        LocalDateTime start = now.plusDays(1);
-//        LocalDateTime end = now.plusDays(2);
 
         user1 = new User(1L, "User1 name", "user1@mail.com", new HashSet<>());
         userRepository.save(user1);
@@ -125,8 +125,9 @@ class ItemServiceImplTest {
 
     @Test
     void update() {
-
         when(repository.findItemByIdAndOwner(anyLong(), anyLong()))
+                .thenReturn(Optional.ofNullable(item1));
+        when(repository.findItemByIdAndOwner(0L, 0L))
                 .thenReturn(Optional.ofNullable(item1));
         when(repository.save(any(Item.class)))
                 .thenReturn(item1);
@@ -137,6 +138,14 @@ class ItemServiceImplTest {
         assertEquals("Item1 name", itemDto.getName());
         assertEquals("Item1 description", itemDto.getDescription());
         assertEquals(true, itemDto.getAvailable());
+
+
+        ValidationFieldsException responses = assertThrows(ValidationFieldsException.class,
+                () -> itemService.update(0L,
+                        0L,
+                        itemDto));
+
+        assertEquals("the owner of the item is not correct", responses.getMessage());
     }
 
     @Test
