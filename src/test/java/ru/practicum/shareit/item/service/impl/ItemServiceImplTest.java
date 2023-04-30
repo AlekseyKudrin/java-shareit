@@ -23,6 +23,7 @@ import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.service.impl.UserServiceImpl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +62,8 @@ class ItemServiceImplTest {
 
     private Booking booking1;
 
+    private Booking booking2;
+
     private Comment comment1;
 
     private LocalDateTime now;
@@ -68,8 +71,8 @@ class ItemServiceImplTest {
     @BeforeEach
     void beforeEach() {
         now = LocalDateTime.now();
-        LocalDateTime start = now.plusDays(1);
-        LocalDateTime end = now.plusDays(2);
+//        LocalDateTime start = now.plusDays(1);
+//        LocalDateTime end = now.plusDays(2);
 
         user1 = new User(1L, "User1 name", "user1@mail.com", new HashSet<>());
         userRepository.save(user1);
@@ -84,13 +87,21 @@ class ItemServiceImplTest {
         item1.setOwner(1L);
         item1.setRequestId(1L);
 
-        booking1 = new Booking();
-        booking1.setId(1L);
-        booking1.setStart(start);
-        booking1.setEnd(end);
-        booking1.setItem(item1);
-        booking1.setBooker(user1);
-        booking1.setStatus(BookingStatus.WAITING);
+        booking1 = new Booking(
+                1L,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(1),
+                item1,
+                user1,
+                BookingStatus.WAITING);
+
+        booking2 = new Booking(
+                2L,
+                LocalDateTime.now().plusDays(2),
+                LocalDateTime.now().plusDays(3),
+                item1,
+                user1,
+                BookingStatus.WAITING);
     }
 
     @Test
@@ -132,6 +143,8 @@ class ItemServiceImplTest {
     void get() {
         when(repository.findItemById(anyLong()))
                 .thenReturn(Optional.ofNullable(item1));
+        when(bookingRepository.findAllByItemIdAndBooker_IdNotAndStatusNot(anyLong(), anyLong(), any()))
+                .thenReturn(new ArrayList<>(List.of(booking1, booking2)));
 
         ItemDto itemDtoBooking = itemService.get(user1.getId(), item1.getId());
 

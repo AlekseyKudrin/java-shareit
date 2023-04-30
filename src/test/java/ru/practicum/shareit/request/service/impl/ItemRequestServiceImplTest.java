@@ -11,6 +11,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.item.dao.ItemRepository;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dao.ItemRequestRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.model.ItemRequestDto;
@@ -24,8 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
@@ -57,6 +57,18 @@ class ItemRequestServiceImplTest {
             null);
 
     private ItemRequest itemRequest = ItemRequestMapper.toItemRequest(itemRequestDto, user);
+
+    private final Item itemDto = new Item(
+            1L,
+            "Item1 name",
+            "Item1 description",
+            true,
+            1L,
+            1L,
+            null,
+            null,
+            null);
+
 
     @Test
     void create() {
@@ -104,10 +116,14 @@ class ItemRequestServiceImplTest {
 
     @Test
     void getById() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(user));
+        when(requestRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(itemRequest));
+        when(itemRepository.findItemByRequestId(anyLong()))
+                .thenReturn(List.of(itemDto));
 
-        List<ItemRequestDto> responseList = itemRequestService.getRequestsOwner(user.getId());
-        assertTrue(responseList.isEmpty());
-        verify(requestRepository).findAllByRequestorId(anyLong());
+        ItemRequestDto response = itemRequestService.getById(user.getId(), 1);
+        assertNotNull(response);
     }
 }
