@@ -91,13 +91,6 @@ class ItemServiceImplTest {
         booking1.setItem(item1);
         booking1.setBooker(user1);
         booking1.setStatus(BookingStatus.WAITING);
-
-        comment1 = new Comment();
-        comment1.setId(1L);
-        comment1.setText("Comment1 text");
-        comment1.setItem(item1);
-        comment1.setUser(user1);
-        comment1.setCreated(LocalDateTime.now());
     }
 
     @Test

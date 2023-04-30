@@ -40,19 +40,19 @@ public class BookingServiceImpl implements BookingService {
         );
         booking.setStatus(BookingStatus.WAITING);
         if (!bookingDto.getItem().getAvailable()) {
-            throw new ValidationException("Этот item недоступен");
+            throw new ValidationException("This item not available");
         }
         if (bookingDto.getItem().getOwner() == userId) {
-            throw new NoSuchElementException("User не может забронировать свой же item");
+            throw new NoSuchElementException("User cannot book own item");
         }
         if (bookingDto.getEnd().isBefore(bookingDto.getStart()) || bookingDto.getStart().isBefore(LocalDateTime.now())) {
-            throw new ValidationException("Дата окончания раньше даты начала");
+            throw new ValidationException("End date before start date");
         }
         if (bookingDto.getStart().isBefore(LocalDateTime.now())) {
-            throw new ValidationException("Дата начала в прошлом");
+            throw new ValidationException("Start date in the past");
         }
         if (bookingDto.getStart().isEqual(bookingDto.getEnd())) {
-            throw new ValidationException("йцукйцукйцук");
+            throw new ValidationException("Start date cannot be equal to end date");
         }
         return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
