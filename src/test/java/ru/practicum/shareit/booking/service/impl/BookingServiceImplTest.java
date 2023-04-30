@@ -14,6 +14,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingDto;
 import ru.practicum.shareit.booking.model.BookingMapper;
 import ru.practicum.shareit.booking.model.enums.BookingStatus;
+import ru.practicum.shareit.exceptionHandler.exception.UnsupportedStateException;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dao.UserRepository;
@@ -22,9 +23,11 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -145,6 +148,12 @@ class BookingServiceImplTest {
         assertEquals(item1, bookingDtoResponse.getItem());
         assertEquals(user1, bookingDtoResponse.getBooker());
         assertEquals(BookingStatus.WAITING, bookingDtoResponse.getStatus());
+
+        NoSuchElementException responses = assertThrows(NoSuchElementException.class,
+                () -> bookingService.getBookingById(user2.getId(),
+                        5L));
+
+        assertEquals("User_id = 2 и booking_id = 5 not connected", responses.getMessage());
     }
 
     @Test
@@ -153,9 +162,44 @@ class BookingServiceImplTest {
                 .thenReturn(Optional.ofNullable(user1));
         when(bookingRepository.findAllByBookerIdOrderByStartDesc(anyLong(), any(PageRequest.class)))
                 .thenReturn(List.of(booking1));
+        when(bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByStartDesc(anyLong(), any(), any()))
+                .thenReturn(List.of(booking1));
+        when(bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(anyLong(), any(), any(), any(PageRequest.class)))
+                .thenReturn(List.of(booking1));
+        when(bookingRepository.findAllByBookerIdAndStartIsAfterOrderByStartDesc(anyLong(), any(), any()))
+                .thenReturn(List.of(booking1));
+        when(bookingRepository.findAllByBookerIdAndStatus(anyLong(), any(), any()))
+                .thenReturn(List.of(booking1));
+
+
+        List<BookingDto> responses1 = bookingService.getAllBookingsUser(user1.getId(),
+                "ALL",
+                0,
+                10);
+
+        assertEquals(1, responses1.size());
+        assertEquals(1, responses1.get(0).getId());
+        assertEquals(start, responses1.get(0).getStart());
+        assertEquals(end, responses1.get(0).getEnd());
+        assertEquals(item1, responses1.get(0).getItem());
+        assertEquals(user1, responses1.get(0).getBooker());
+        assertEquals(BookingStatus.WAITING, responses1.get(0).getStatus());
+
+        List<BookingDto> responses2 = bookingService.getAllBookingsUser(user1.getId(),
+                "PAST",
+                0,
+                10);
+
+        assertEquals(1, responses2.size());
+        assertEquals(1, responses2.get(0).getId());
+        assertEquals(start, responses2.get(0).getStart());
+        assertEquals(end, responses2.get(0).getEnd());
+        assertEquals(item1, responses2.get(0).getItem());
+        assertEquals(user1, responses2.get(0).getBooker());
+        assertEquals(BookingStatus.WAITING, responses2.get(0).getStatus());
 
         List<BookingDto> bookingDtoResponses = bookingService.getAllBookingsUser(user1.getId(),
-                "ALL",
+                "CURRENT",
                 0,
                 10);
 
@@ -167,6 +211,53 @@ class BookingServiceImplTest {
         assertEquals(user1, bookingDtoResponses.get(0).getBooker());
         assertEquals(BookingStatus.WAITING, bookingDtoResponses.get(0).getStatus());
 
+        List<BookingDto> responses3 = bookingService.getAllBookingsUser(user1.getId(),
+                "FUTURE",
+                0,
+                10);
+
+        assertEquals(1, responses3.size());
+        assertEquals(1, responses3.get(0).getId());
+        assertEquals(start, responses3.get(0).getStart());
+        assertEquals(end, responses3.get(0).getEnd());
+        assertEquals(item1, responses3.get(0).getItem());
+        assertEquals(user1, responses3.get(0).getBooker());
+        assertEquals(BookingStatus.WAITING, responses3.get(0).getStatus());
+
+        List<BookingDto> responses4 = bookingService.getAllBookingsUser(user1.getId(),
+                "WAITING",
+                0,
+                10);
+
+        assertEquals(1, responses4.size());
+        assertEquals(1, responses4.get(0).getId());
+        assertEquals(start, responses4.get(0).getStart());
+        assertEquals(end, responses4.get(0).getEnd());
+        assertEquals(item1, responses4.get(0).getItem());
+        assertEquals(user1, responses4.get(0).getBooker());
+        assertEquals(BookingStatus.WAITING, responses4.get(0).getStatus());
+
+        List<BookingDto> responses5 = bookingService.getAllBookingsUser(user1.getId(),
+                "REJECTED",
+                0,
+                10);
+
+        assertEquals(1, responses5.size());
+        assertEquals(1, responses5.get(0).getId());
+        assertEquals(start, responses5.get(0).getStart());
+        assertEquals(end, responses5.get(0).getEnd());
+        assertEquals(item1, responses5.get(0).getItem());
+        assertEquals(user1, responses5.get(0).getBooker());
+        assertEquals(BookingStatus.WAITING, responses5.get(0).getStatus());
+
+
+        UnsupportedStateException responses6 = assertThrows(UnsupportedStateException.class,
+                () -> bookingService.getAllBookingsUser(user1.getId(),
+                        "Unknown",
+                        0,
+                        10));
+
+        assertEquals("Unknown state: Unknown", responses6.getMessage());
     }
 
     @Test
@@ -175,18 +266,101 @@ class BookingServiceImplTest {
                 .thenReturn(Optional.ofNullable(user1));
         when(bookingRepository.findAllByItem_OwnerOrderByStartDesc(anyLong(), any(PageRequest.class)))
                 .thenReturn(List.of(booking1));
+        when(bookingRepository.findAllByItem_OwnerAndEndIsBeforeOrderByStartDesc(anyLong(), any(), any(PageRequest.class)))
+                .thenReturn(List.of(booking1));
+        when(bookingRepository.findAllByItem_OwnerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(anyLong(), any(), any(), any(PageRequest.class)))
+                .thenReturn(List.of(booking1));
+        when(bookingRepository.findAllByItem_OwnerAndStartIsAfterOrderByStartDesc(anyLong(), any(), any(PageRequest.class)))
+                .thenReturn(List.of(booking1));
+        when(bookingRepository.findAllByItem_OwnerAndStatus(anyLong(), any(), any(PageRequest.class)))
+                .thenReturn(List.of(booking1));
 
-        List<BookingDto> bookingDtoResponses = bookingService.getAllBookingsOwner(user1.getId(),
+        List<BookingDto> responses1 = bookingService.getAllBookingsOwner(user1.getId(),
                 "ALL",
                 0,
                 10);
 
-        assertEquals(1, bookingDtoResponses.size());
-        assertEquals(1, bookingDtoResponses.get(0).getId());
-        assertEquals(start, bookingDtoResponses.get(0).getStart());
-        assertEquals(end, bookingDtoResponses.get(0).getEnd());
-        assertEquals(item1, bookingDtoResponses.get(0).getItem());
-        assertEquals(user1, bookingDtoResponses.get(0).getBooker());
-        assertEquals(BookingStatus.WAITING, bookingDtoResponses.get(0).getStatus());
+        assertEquals(1, responses1.size());
+        assertEquals(1, responses1.get(0).getId());
+        assertEquals(start, responses1.get(0).getStart());
+        assertEquals(end, responses1.get(0).getEnd());
+        assertEquals(item1, responses1.get(0).getItem());
+        assertEquals(user1, responses1.get(0).getBooker());
+        assertEquals(BookingStatus.WAITING, responses1.get(0).getStatus());
+
+        List<BookingDto> responses2 = bookingService.getAllBookingsOwner(user1.getId(),
+                "PAST",
+                0,
+                10);
+
+        assertEquals(1, responses2.size());
+        assertEquals(1, responses2.get(0).getId());
+        assertEquals(start, responses2.get(0).getStart());
+        assertEquals(end, responses2.get(0).getEnd());
+        assertEquals(item1, responses2.get(0).getItem());
+        assertEquals(user1, responses2.get(0).getBooker());
+        assertEquals(BookingStatus.WAITING, responses2.get(0).getStatus());
+
+        List<BookingDto> responses3 = bookingService.getAllBookingsOwner(user1.getId(),
+                "CURRENT",
+                0,
+                10);
+
+
+        assertEquals(1, responses3.size());
+        assertEquals(1, responses3.get(0).getId());
+        assertEquals(start, responses3.get(0).getStart());
+        assertEquals(end, responses3.get(0).getEnd());
+        assertEquals(item1, responses3.get(0).getItem());
+        assertEquals(user1, responses3.get(0).getBooker());
+        assertEquals(BookingStatus.WAITING, responses3.get(0).getStatus());
+
+        List<BookingDto> responses4 = bookingService.getAllBookingsOwner(user1.getId(),
+                "FUTURE",
+                0,
+                10);
+
+        assertEquals(1, responses4.size());
+        assertEquals(1, responses4.get(0).getId());
+        assertEquals(start, responses4.get(0).getStart());
+        assertEquals(end, responses4.get(0).getEnd());
+        assertEquals(item1, responses4.get(0).getItem());
+        assertEquals(user1, responses4.get(0).getBooker());
+        assertEquals(BookingStatus.WAITING, responses4.get(0).getStatus());
+
+        List<BookingDto> responses5 = bookingService.getAllBookingsOwner(user1.getId(),
+                "WAITING",
+                0,
+                10);
+
+        assertEquals(1, responses5.size());
+        assertEquals(1, responses5.get(0).getId());
+        assertEquals(start, responses5.get(0).getStart());
+        assertEquals(end, responses5.get(0).getEnd());
+        assertEquals(item1, responses5.get(0).getItem());
+        assertEquals(user1, responses5.get(0).getBooker());
+        assertEquals(BookingStatus.WAITING, responses5.get(0).getStatus());
+
+        List<BookingDto> responses6 = bookingService.getAllBookingsOwner(user1.getId(),
+                "REJECTED",
+                0,
+                10);
+
+        assertEquals(1, responses6.size());
+        assertEquals(1, responses6.get(0).getId());
+        assertEquals(start, responses6.get(0).getStart());
+        assertEquals(end, responses6.get(0).getEnd());
+        assertEquals(item1, responses6.get(0).getItem());
+        assertEquals(user1, responses6.get(0).getBooker());
+        assertEquals(BookingStatus.WAITING, responses6.get(0).getStatus());
+
+        UnsupportedStateException responses7 = assertThrows(UnsupportedStateException.class,
+                () -> bookingService.getAllBookingsOwner(user1.getId(),
+                        "Unknown",
+                        0,
+                        10));
+
+        assertEquals("Unknown state: Unknown", responses7.getMessage());
+
     }
 }

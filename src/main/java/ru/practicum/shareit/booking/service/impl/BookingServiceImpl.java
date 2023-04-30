@@ -76,7 +76,7 @@ public class BookingServiceImpl implements BookingService {
         userRepository.findById(userId).orElseThrow();
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
         if (!(Objects.equals(booking.getBooker().getId(), userId) || Objects.equals(booking.getItem().getOwner(), userId)))
-            throw new NoSuchElementException(String.format("User_id = %d и booking_id = %d не связаны", userId, bookingId));
+            throw new NoSuchElementException(String.format("User_id = %d и booking_id = %d not connected", userId, bookingId));
         return BookingMapper.toBookingDto(booking);
     }
 
@@ -142,7 +142,8 @@ public class BookingServiceImpl implements BookingService {
                 break;
             case "PAST":
                 result = bookingRepository.findAllByItem_OwnerAndEndIsBeforeOrderByStartDesc(
-                        ownerId, LocalDateTime.now(),
+                        ownerId,
+                        LocalDateTime.now(),
                         pageRequest);
                 break;
             case "CURRENT":
