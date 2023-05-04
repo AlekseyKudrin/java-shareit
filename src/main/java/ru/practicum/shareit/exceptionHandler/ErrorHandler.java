@@ -6,23 +6,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exceptionHandler.exception.ConflictDataException;
 import ru.practicum.shareit.exceptionHandler.exception.UnsupportedStateException;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 
 import javax.validation.ValidationException;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handlerConflictDataException(final ConflictDataException e) {
-        log.error("Conflict data input: {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
-    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -33,7 +25,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlerMethodArgumentNotValidExceptionException(final MethodArgumentNotValidException e) {
+    public ErrorResponse handlerMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         log.error("Data input incorrect: {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
@@ -45,12 +37,6 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handlerOtherException(final Throwable e) {
-        log.error("Error from: {}", Arrays.toString(e.getStackTrace()));
-        return new ErrorResponse(e.getMessage());
-    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
