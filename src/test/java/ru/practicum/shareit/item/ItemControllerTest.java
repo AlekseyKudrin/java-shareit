@@ -88,6 +88,14 @@ class ItemControllerTest {
                         .header(HEADER, user1Dto.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(item1Dto)));
+
+        item1Dto.setName("");
+        mockMvc.perform(post("/items")
+                        .content(mapper.writeValueAsString(item1Dto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HEADER, user1Dto.getId()))
+                .andExpect(status().isBadRequest());
+
     }
 
     @Test

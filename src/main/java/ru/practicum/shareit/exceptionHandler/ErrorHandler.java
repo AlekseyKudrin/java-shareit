@@ -15,12 +15,6 @@ import java.util.NoSuchElementException;
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    public ErrorResponse handlerConflictDataException(final ConflictDataException e) {
-//        log.error("Conflict data input: {}", e.getMessage());
-//        return new ErrorResponse(e.getMessage());
-//    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)

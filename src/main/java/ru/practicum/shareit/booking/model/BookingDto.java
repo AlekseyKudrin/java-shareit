@@ -9,6 +9,8 @@ import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -22,8 +24,10 @@ public class BookingDto {
     }
 
     Long id;
+    @FutureOrPresent
     @NotNull(message = "Field start cannot be empty", groups = Create.class)
     LocalDateTime start;
+    @Future
     @NotNull(message = "Field end cannot be empty", groups = Create.class)
     LocalDateTime end;
     @NotNull(message = "Field itemId cannot be empty", groups = Create.class)

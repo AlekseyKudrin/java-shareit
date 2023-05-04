@@ -8,6 +8,7 @@ import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingDto;
 import ru.practicum.shareit.booking.model.BookingMapper;
+import ru.practicum.shareit.booking.model.enums.BookingState;
 import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptionHandler.exception.UnsupportedStateException;
@@ -85,43 +86,45 @@ public class BookingServiceImpl implements BookingService {
         userRepository.findById(userId).orElseThrow();
         int page = from / size;
         PageRequest pageRequest = PageRequest.of(page, size);
-        List<Booking> result;
-        switch (bookingState) {
-            case "ALL":
-                result = bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageRequest);
-                break;
-            case "PAST":
-                result = bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByStartDesc(
-                        userId,
-                        LocalDateTime.now(),
-                        pageRequest);
-                break;
-            case "CURRENT":
-                result = bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
-                        userId,
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        pageRequest);
-                break;
-            case "FUTURE":
-                result = bookingRepository.findAllByBookerIdAndStartIsAfterOrderByStartDesc(
-                        userId,
-                        LocalDateTime.now(),
-                        pageRequest);
-                break;
-            case "WAITING":
-                result = bookingRepository.findAllByBookerIdAndStatus(
-                        userId,
-                        BookingStatus.WAITING,
-                        pageRequest);
-                break;
-            case "REJECTED":
-                result = bookingRepository.findAllByBookerIdAndStatus(userId,
-                        BookingStatus.REJECTED,
-                        pageRequest);
-                break;
-            default:
-                throw new UnsupportedStateException("Unknown state: " + bookingState);
+        List<Booking> result = null;
+        try {
+            switch (BookingState.valueOf(bookingState)) {
+                case ALL:
+                    result = bookingRepository.findAllByBookerIdOrderByStartDesc(userId, pageRequest);
+                    break;
+                case PAST:
+                    result = bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByStartDesc(
+                            userId,
+                            LocalDateTime.now(),
+                            pageRequest);
+                    break;
+                case CURRENT:
+                    result = bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
+                            userId,
+                            LocalDateTime.now(),
+                            LocalDateTime.now(),
+                            pageRequest);
+                    break;
+                case FUTURE:
+                    result = bookingRepository.findAllByBookerIdAndStartIsAfterOrderByStartDesc(
+                            userId,
+                            LocalDateTime.now(),
+                            pageRequest);
+                    break;
+                case WAITING:
+                    result = bookingRepository.findAllByBookerIdAndStatus(
+                            userId,
+                            BookingStatus.WAITING,
+                            pageRequest);
+                    break;
+                case REJECTED:
+                    result = bookingRepository.findAllByBookerIdAndStatus(userId,
+                            BookingStatus.REJECTED,
+                            pageRequest);
+                    break;
+            }
+        } catch (IllegalArgumentException ex) {
+            throw new UnsupportedStateException("Unknown state: " + bookingState);
         }
         return result.stream()
                 .map(BookingMapper::toBookingDto)
@@ -129,50 +132,52 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAllBookingsOwner(long ownerId, String bookingState, int from, int size) {
+    public List<BookingDto> getAllBookingsOwner(long ownerId, String bookingState, int from, int size) throws IllegalArgumentException {
         userRepository.findById(ownerId).orElseThrow();
         int page = from / size;
         PageRequest pageRequest = PageRequest.of(page, size);
-        List<Booking> result;
-        switch (bookingState) {
-            case "ALL":
-                result = bookingRepository.findAllByItem_OwnerOrderByStartDesc(
-                        ownerId,
-                        pageRequest);
-                break;
-            case "PAST":
-                result = bookingRepository.findAllByItem_OwnerAndEndIsBeforeOrderByStartDesc(
-                        ownerId,
-                        LocalDateTime.now(),
-                        pageRequest);
-                break;
-            case "CURRENT":
-                result = bookingRepository.findAllByItem_OwnerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
-                        ownerId,
-                        LocalDateTime.now(),
-                        LocalDateTime.now(),
-                        pageRequest);
-                break;
-            case "FUTURE":
-                result = bookingRepository.findAllByItem_OwnerAndStartIsAfterOrderByStartDesc(
-                        ownerId,
-                        LocalDateTime.now(),
-                        pageRequest);
-                break;
-            case "WAITING":
-                result = bookingRepository.findAllByItem_OwnerAndStatus(
-                        ownerId,
-                        BookingStatus.WAITING,
-                        pageRequest);
-                break;
-            case "REJECTED":
-                result = bookingRepository.findAllByItem_OwnerAndStatus(
-                        ownerId,
-                        BookingStatus.REJECTED,
-                        pageRequest);
-                break;
-            default:
-                throw new UnsupportedStateException("Unknown state: " + bookingState);
+        List<Booking> result = null;
+        try {
+            switch (BookingState.valueOf(bookingState)) {
+                case ALL:
+                    result = bookingRepository.findAllByItem_OwnerOrderByStartDesc(
+                            ownerId,
+                            pageRequest);
+                    break;
+                case PAST:
+                    result = bookingRepository.findAllByItem_OwnerAndEndIsBeforeOrderByStartDesc(
+                            ownerId,
+                            LocalDateTime.now(),
+                            pageRequest);
+                    break;
+                case CURRENT:
+                    result = bookingRepository.findAllByItem_OwnerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
+                            ownerId,
+                            LocalDateTime.now(),
+                            LocalDateTime.now(),
+                            pageRequest);
+                    break;
+                case FUTURE:
+                    result = bookingRepository.findAllByItem_OwnerAndStartIsAfterOrderByStartDesc(
+                            ownerId,
+                            LocalDateTime.now(),
+                            pageRequest);
+                    break;
+                case WAITING:
+                    result = bookingRepository.findAllByItem_OwnerAndStatus(
+                            ownerId,
+                            BookingStatus.WAITING,
+                            pageRequest);
+                    break;
+                case REJECTED:
+                    result = bookingRepository.findAllByItem_OwnerAndStatus(
+                            ownerId,
+                            BookingStatus.REJECTED,
+                            pageRequest);
+                    break;
+            }
+        } catch (IllegalArgumentException ex) {
+            throw new UnsupportedStateException("Unknown state: " + bookingState);
         }
         return result.stream()
                 .map(BookingMapper::toBookingDto)

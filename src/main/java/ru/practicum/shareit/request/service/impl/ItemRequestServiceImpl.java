@@ -34,14 +34,14 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDto create(long userId, ItemRequestDto itemRequestDto) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = validationUserById(userId);
         itemRequestDto.setCreated(LocalDateTime.now());
         return ItemRequestMapper.toItemRequestDto(requestRepository.save(ItemRequestMapper.toItemRequest(itemRequestDto, user)));
     }
 
     @Override
     public List<ItemRequestDto> getRequestsOwner(long userId) {
-        userRepository.findById(userId).orElseThrow();
+        validationUserById(userId);
         List<ItemRequestDto> responseList = requestRepository.findAllByRequestorId(userId).stream()
                 .map(ItemRequestMapper::toItemRequestDto)
                 .collect(Collectors.toList());
@@ -60,7 +60,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDto getById(long userId, long requestId) {
-        userRepository.findById(userId).orElseThrow();
+        validationUserById(userId);
         ItemRequest itemRequest = requestRepository.findById(requestId).get();
         List<ItemDto> items = itemRepository.findItemByRequestId(requestId).stream()
                 .map(ItemMapper::toItemDto)
@@ -81,5 +81,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 .collect(Collectors.toList());
         items.forEach(itemDto -> requests.get(itemDto.getRequestId()).getItems().add(itemDto));
         return new ArrayList<>(requests.values());
+    }
+
+    private User validationUserById(long id) {
+        return userRepository.findById(id).orElseThrow();
     }
 }

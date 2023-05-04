@@ -56,6 +56,13 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(user1Dto)));
+
+        user1Dto.setName("");
+        mockMvc.perform(post("/users")
+                        .content(mapper.writeValueAsString(user1Dto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
     }
 
     @Test

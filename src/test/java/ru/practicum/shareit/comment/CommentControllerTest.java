@@ -76,5 +76,15 @@ class CommentControllerTest {
                         .header(HEADER, user.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(commentDto)));
+
+        commentDto.setText(null);
+        mockMvc.perform(post("/items/1/comment")
+                        .content(mapper.writeValueAsString(commentDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HEADER, user.getId()))
+                .andExpect(status().isBadRequest());
+
+
+
     }
 }
