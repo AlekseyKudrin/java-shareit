@@ -32,7 +32,7 @@ public class ItemRequestClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getRequestsOwner(long userId) {
-        return get("/" + userId);
+        return get("", userId);
     }
 
     public ResponseEntity<Object> getAllRequest(long userId, int from, int size) {
@@ -44,6 +44,6 @@ public class ItemRequestClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getRequestById(long userId, long requestId) {
-        return patch("/" + userId, requestId);
+        return get("/" + requestId, userId);
     }
 }

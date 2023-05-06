@@ -18,6 +18,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -39,10 +40,20 @@ public class BookingServiceImpl implements BookingService {
                 appropriateBookerAndItem(userId, bookingDto)
         );
         booking.setStatus(BookingStatus.WAITING);
-
+        if (!bookingDto.getItem().getAvailable()) {
+            throw new ValidationException("This item not available");
+        }
         if (bookingDto.getItem().getOwner() == userId) {
             throw new NoSuchElementException("User cannot book own item");
-
+        }
+        if (bookingDto.getEnd().isBefore(bookingDto.getStart()) || bookingDto.getStart().isBefore(LocalDateTime.now())) {
+            throw new ValidationException("End date before start date");
+        }
+        if (bookingDto.getStart().isBefore(LocalDateTime.now())) {
+            throw new ValidationException("Start date in the past");
+        }
+        if (bookingDto.getStart().isEqual(bookingDto.getEnd())) {
+            throw new ValidationException("Start date cannot be equal to end date");
         }
         return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
@@ -51,9 +62,11 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto status(long userId, long bookingId, Boolean isApproved) {
         BookingStatus bookingStatus = isApproved ? BookingStatus.APPROVED : BookingStatus.REJECTED;
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
+        if (booking.getStatus() == BookingStatus.APPROVED)
+            throw new ValidationException("Status cannot be changed");
 
         if (booking.getItem().getOwner() != userId) {
-            throw new NoSuchElementException("Букер не может изменить статус бронирования");
+            throw new NoSuchElementException("Booker cannot change rating status");
         }
         booking.setStatus(bookingStatus);
         bookingRepository.save(booking);

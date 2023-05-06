@@ -13,7 +13,7 @@ import ru.practicum.shareit.comment.dto.CommentDto;
 @Service
 public class CommentClient extends BaseClient {
 
-    private static final String API_PREFIX = "/comments";
+    private static final String API_PREFIX = "/items";
 
     @Autowired
     public CommentClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
@@ -27,6 +27,6 @@ public class CommentClient extends BaseClient {
 
 
     public ResponseEntity<Object> addComment(long userId, long itemId, CommentDto commentDto) {
-        return post("/"+ itemId, userId, commentDto);
+        return post("/"+ itemId + "/comment", userId, commentDto);
     }
 }

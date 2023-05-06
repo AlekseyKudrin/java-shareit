@@ -17,6 +17,7 @@ import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,7 +38,8 @@ public class CommentServiceImpl implements CommentService {
         Item item = itemRepository.findById(itemId).orElseThrow();
         List<Booking> bookings = bookingRepository
                 .findAllByItemIdAndBooker_IdAndStatusAndEndIsBefore(itemId, userId, BookingStatus.APPROVED, LocalDateTime.now());
-
+        if (bookings.isEmpty())
+            throw new ValidationException("Item not bookings this user");
         Comment comment = CommentMapper.toComment(commentDto);
         comment.setCreated(LocalDateTime.now());
         comment.setUser(UserMapper.toUser(userDto));

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exceptionHandler.exception.UnsupportedStateException;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 
+import javax.validation.ValidationException;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -25,6 +26,13 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handlerMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+        log.error("Data input incorrect: {}", e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerValidationException(final ValidationException e) {
         log.error("Data input incorrect: {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
