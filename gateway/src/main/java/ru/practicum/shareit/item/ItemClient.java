@@ -40,13 +40,13 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getItems(long userId) {
-        return get("/" + userId);
+        return get("/", userId);
     }
 
     public ResponseEntity<Object> searchItem(String text) {
         Map<String, Object> parameters = Map.of(
                 "text", text
         );
-        return get("?text={text}", null,parameters);
+        return get("/search/?text={text}", null, parameters);
     }
 }

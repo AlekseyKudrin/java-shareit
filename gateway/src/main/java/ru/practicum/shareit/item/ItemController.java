@@ -8,6 +8,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 
+import java.util.List;
+
 @Slf4j
 @Controller
 @Validated
@@ -20,7 +22,7 @@ public class ItemController {
     @PostMapping
     public ResponseEntity<Object> create(
             @RequestHeader("X-Sharer-User-Id") long userId,
-            @RequestBody ItemDto itemDto
+            @Validated @RequestBody ItemDto itemDto
     ) {
         log.info("Creating item");
         return itemClient.create(userId, itemDto);
@@ -59,7 +61,7 @@ public class ItemController {
         log.info("Return of found items");
         if (text.isBlank()) {
             log.info("Return item list successfully");
-            return null;
+            return ResponseEntity.ok().body(List.of());
         } else {
             return itemClient.searchItem(text);
         }
