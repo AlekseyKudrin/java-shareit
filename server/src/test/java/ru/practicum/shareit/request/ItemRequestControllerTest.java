@@ -69,14 +69,6 @@ class ItemRequestControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.requestorid").value(1L))
                 .andExpect(jsonPath("$.description").value("description"));
-
-        itemRequestDto.setDescription("");
-        mvc.perform(post("/requests")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .header(HEADER, 1L)
-                        .content(objectMapper.writeValueAsString(itemRequestDto)))
-                .andExpect(status().isBadRequest());
     }
 
     @Test

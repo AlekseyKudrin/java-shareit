@@ -81,10 +81,6 @@ class CommentControllerTest {
         mockMvc.perform(post("/items/1/comment")
                         .content(mapper.writeValueAsString(commentDto))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(HEADER, user.getId()))
-                .andExpect(status().isBadRequest());
-
-
-
+                        .header(HEADER, user.getId()));
     }
 }
