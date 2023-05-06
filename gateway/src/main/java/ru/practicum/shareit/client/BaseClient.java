@@ -3,11 +3,7 @@ package ru.practicum.shareit.client;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -85,8 +81,10 @@ public class BaseClient {
         ResponseEntity<Object> shareitServerResponse;
         try {
             if (parameters != null) {
+//                shareitServerResponse = new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
                 shareitServerResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
             } else {
+//                shareitServerResponse = new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
                 shareitServerResponse = rest.exchange(path, method, requestEntity, Object.class);
             }
         } catch (HttpStatusCodeException e) {
