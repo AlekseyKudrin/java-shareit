@@ -69,7 +69,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAll(long userId) {
-        return itemRepository.findItemsByOwner(userId).stream()
+        return itemRepository.findItemsByOwnerOrderByIdAsc(userId).stream()
                 .map(ItemMapper::toItemDto)
                 .map(i -> addBookingTime(i, userId))
                 .map(this::addCommentsItem)

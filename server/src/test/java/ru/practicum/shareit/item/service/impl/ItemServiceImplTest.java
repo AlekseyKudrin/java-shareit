@@ -165,7 +165,7 @@ class ItemServiceImplTest {
 
     @Test
     void getAll() {
-        when(repository.findItemsByOwner(anyLong()))
+        when(repository.findItemsByOwnerOrderByIdAsc(anyLong()))
                 .thenReturn(List.of(item1));
 
 
