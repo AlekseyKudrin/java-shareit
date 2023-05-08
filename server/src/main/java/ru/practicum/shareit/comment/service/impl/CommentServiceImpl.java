@@ -11,13 +11,13 @@ import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.comment.model.CommentDto;
 import ru.practicum.shareit.comment.model.CommentMapper;
 import ru.practicum.shareit.comment.service.CommentService;
+import ru.practicum.shareit.exceptionHandler.exception.ValidationException;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
 

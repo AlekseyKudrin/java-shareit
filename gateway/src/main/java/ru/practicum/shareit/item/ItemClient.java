@@ -10,6 +10,8 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.item.dto.ItemDto;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Map;
 
 @Service
@@ -39,13 +41,19 @@ public class ItemClient extends BaseClient {
         return get("/" + itemId, userId);
     }
 
-    public ResponseEntity<Object> getItems(long userId) {
-        return get("/", userId);
+    public ResponseEntity<Object> getItems(long userId, @PositiveOrZero Integer from, @Positive Integer size) {
+        Map<String, Object> parameters = Map.of(
+                "from", from,
+                "size", size
+        );
+        return get("/", userId, parameters);
     }
 
-    public ResponseEntity<Object> searchItem(String text) {
+    public ResponseEntity<Object> searchItem(String text, @PositiveOrZero Integer from, @Positive Integer size) {
         Map<String, Object> parameters = Map.of(
-                "text", text
+                "text", text,
+                "from", from,
+                "size", size
         );
         return get("/search/?text={text}", null, parameters);
     }

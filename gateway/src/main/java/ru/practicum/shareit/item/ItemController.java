@@ -8,6 +8,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -48,22 +50,26 @@ public class ItemController {
 
     @GetMapping
     public ResponseEntity<Object> getAll(
-            @RequestHeader("X-Sharer-User-Id") long userId
+            @RequestHeader("X-Sharer-User-Id") long userId,
+            @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size
     ) {
         log.info("Return item list");
-        return itemClient.getItems(userId);
+        return itemClient.getItems(userId, from, size);
     }
 
     @GetMapping("/search")
     public ResponseEntity<Object> search(
-            @RequestParam String text
+            @RequestParam String text,
+            @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size
     ) {
         log.info("Return of found items");
         if (text.isBlank()) {
             log.info("Return item list successfully");
             return ResponseEntity.ok().body(List.of());
         } else {
-            return itemClient.searchItem(text);
+            return itemClient.searchItem(text, from, size);
         }
     }
 }

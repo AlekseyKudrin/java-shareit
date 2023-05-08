@@ -10,7 +10,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 
 @Slf4j
 @Controller
-@Validated
 @RequiredArgsConstructor
 @RequestMapping(path = "/users")
 public class UserController {

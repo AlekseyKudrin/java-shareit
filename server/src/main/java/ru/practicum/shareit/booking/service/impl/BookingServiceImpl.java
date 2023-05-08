@@ -12,13 +12,13 @@ import ru.practicum.shareit.booking.model.enums.BookingState;
 import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptionHandler.exception.UnsupportedStateException;
+import ru.practicum.shareit.exceptionHandler.exception.ValidationException;
 import ru.practicum.shareit.exceptionHandler.exception.ValidationFieldsException;
 import ru.practicum.shareit.item.dao.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dao.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;

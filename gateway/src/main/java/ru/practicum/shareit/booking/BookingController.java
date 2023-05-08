@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.enums.BookingState;
+import ru.practicum.shareit.exceptionHandler.exception.ValidationTimeException;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -27,6 +28,9 @@ public class BookingController {
             @Validated(BookingDto.Create.class)
             @RequestBody BookingDto bookingDto
     ) {
+        if (bookingDto.getEnd().isBefore(bookingDto.getStart())) {
+            throw new ValidationTimeException("The time is not correct");
+        }
         log.info("Creating booking {}, userId={}", bookingDto, userId);
         return bookingClient.create(userId, bookingDto);
     }
@@ -57,7 +61,7 @@ public class BookingController {
         BookingState state = BookingState.from(bookingState)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + bookingState));
         log.info("Get booking with state {}, userId={}, from={}, size={}", state, userId, from, size);
-            return bookingClient.getBookings(userId, state, from, size);
+        return bookingClient.getBookings(userId, state, from, size);
     }
 
 
